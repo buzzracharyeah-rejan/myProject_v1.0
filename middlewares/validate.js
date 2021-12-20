@@ -1,16 +1,21 @@
 const Schema = require('../models/validation');
-const { StatusCodes } = require('http-status-codes');
+
+const httpStatus = require('../constants/generalConstants');
 const { responseError } = require('../helpers/responseHelper');
 
 exports.validateSchema = async (req, res, next) => {
   try {
     const isValidate = await Schema.validate(req.body);
-    if (!isValidate.error) next();
-    throw new Error(isValidate.error);
+    console.log(isValidate);
+    if (isValidate.error) {
+      throw new Error(isValidate.error);
+    }
+    next();
   } catch (error) {
+    console.error(error.stack);
     responseError(
       res,
-      StatusCodes.BAD_REQUEST,
+      httpStatus.BAD_REQUEST,
       'validation error',
       error.message
     );

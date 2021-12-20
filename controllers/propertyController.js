@@ -1,10 +1,24 @@
+require('dotenv').config();
 const { responseSuccess, responseError } = require('../helpers/responseHelper');
 const httpStatus = require('../constants/generalConstants');
 const Property = require('../models/property');
+const { getCoordinates } = require('../utils/getCoordinates');
+
 exports.createProperty = async (req, res, next) => {
   try {
-    const property = new Property(req.body);
+    const location = req.body.location;
+    const response = await getCoordinates(location);
+    const { longitude, latitude } = response.data[0];
+
+    const property = new Property({
+      ...req.body,
+      location_geoJSON: {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      },
+    });
     await property.save();
+
     responseSuccess(
       res,
       httpStatus.CREATED,
@@ -13,12 +27,7 @@ exports.createProperty = async (req, res, next) => {
       property
     );
   } catch (error) {
-    responseError(
-      res,
-      httpStatus.BAD_REQUEST,
-      'error',
-      'create property failed'
-    );
+    responseError(res, httpStatus.BAD_REQUEST, 'error', error.message);
   }
 };
 
@@ -62,6 +71,7 @@ exports.getProperty = async (req, res, next) => {
     );
   }
 };
+
 exports.updateProperty = async (req, res, next) => {
   try {
     const _id = req.params.id;
@@ -79,11 +89,10 @@ exports.updateProperty = async (req, res, next) => {
 
     if (!isValid) throw new Error();
 
-    const property = await Property.findOne({ _id });
-    const updatedProperty = updates.forEach(
-      (update) => (property[update] = req.body[update])
-    );
-    await updatedProperty.save();
+    const property = await Property.findById({ _id });
+    console.log(property);
+    updates.forEach((update) => (property[update] = req.body[update]));
+    // await updatedProperty.save();
     responseSuccess(
       res,
       httpStatus.CREATED,
@@ -92,6 +101,7 @@ exports.updateProperty = async (req, res, next) => {
       updatedPropety
     );
   } catch (error) {
+    console.log(error);
     responseError(
       res,
       httpStatus.BAD_REQUEST,

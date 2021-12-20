@@ -1,4 +1,4 @@
-const { httpStatus } = require('../constants/generalConstants');
+const httpStatus = require('../constants/generalConstants');
 const { responseSuccess, responseError } = require('../helpers/responseHelper');
 const User = require('../models/user');
 

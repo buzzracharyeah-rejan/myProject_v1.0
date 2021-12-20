@@ -10,6 +10,7 @@ const Schema = Joi.object({
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
   contactNumber: Joi.number(),
   displayAddress: Joi.string().alphanum().min(5).max(30).required(),
+  userType: Joi.string().valid('admin', 'buyer', 'seller'),
 });
 
 module.exports = Schema;
