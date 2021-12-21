@@ -4,11 +4,11 @@ const userController = require('../controllers/userController');
 const { validateUserSchema } = require('../middlewares/validate');
 
 router
-  .route('/user/:id')
+  .route('/api/user/:id')
   .get(userController.getUser)
   .delete(userController.deleteUser)
   .patch(validateUserSchema, userController.updateUser);
 
-router.route('/user').get(userController.getAllUsers);
+router.route('/api/user').get(userController.getAllUsers);
 
 module.exports = router;

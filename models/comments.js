@@ -8,12 +8,12 @@ const commentsSchema = new Schema(
       type: String,
       trim: true,
     },
-    owner: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    owner: { type: Schema.Types.ObjectId, ref: 'User' },
     property: { type: Schema.Types.ObjectId, ref: 'Property' },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
 );
 
-const Comments = mongoose.Model('Comments', commentsSchema);
+const Comment = mongoose.model('Comment', commentsSchema);
 
-module.exports = Comments;
+module.exports = Comment;

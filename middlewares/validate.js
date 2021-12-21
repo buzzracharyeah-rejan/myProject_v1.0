@@ -10,6 +10,7 @@ exports.validateUserSchema = async (req, res, next) => {
     req.body = isValidate.value;
     next();
   } catch (error) {
+    // console.error(error.stack);
     responseError(res, httpStatus.BAD_REQUEST, 'validation error', error.message);
   }
 };

@@ -5,6 +5,7 @@ const server = require('./server');
 const authRoute = require('./routes/authRoute');
 const propertyRoute = require('./routes/propertyRoute');
 const userRoute = require('./routes/userRoutes');
+const commentRoute = require('./routes/commentRoute');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(authRoute);
 app.use(userRoute);
 app.use(propertyRoute);
+app.use(commentRoute);
 
 app.listen(process.env.PORT, () => {
   server.main();

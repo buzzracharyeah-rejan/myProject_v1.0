@@ -4,14 +4,14 @@ const router = express.Router();
 const propertyController = require('../controllers/propertyController');
 const { validatePropertySchema } = require('../middlewares/validate');
 router
-  .route('/property')
+  .route('/api/property')
   // get properties
   .get(propertyController.getProperties)
   // create properties
   .post(validatePropertySchema, propertyController.createProperty);
 
 router
-  .route('/property/:id')
+  .route('/api/property/:id')
   // get property by id
   .get(propertyController.getProperty)
   // update property

@@ -15,7 +15,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'firstname required'],
       trim: true,
-      minlength: 5,
+      minlength: 3,
       maxlength: 30,
     },
 
@@ -23,7 +23,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'lastname required'],
       trim: true,
-      minlength: 5,
+      minlength: 3,
       maxlength: 30,
     },
     email: {
@@ -68,7 +68,6 @@ const userSchema = new Schema(
       required: false,
       default: null,
     },
-    properties: [{ type: Schema.Types.ObjectId, ref: 'Property' }],
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 0 } }
 );
