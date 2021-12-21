@@ -4,6 +4,7 @@ const dotenv = require('dotenv').config();
 const server = require('./server');
 const authRoute = require('./routes/authRoute');
 const propertyRoute = require('./routes/propertyRoute');
+const userRoute = require('./routes/userRoutes');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // register routes
 app.use(authRoute);
+app.use(userRoute);
 app.use(propertyRoute);
 
 app.listen(process.env.PORT, () => {

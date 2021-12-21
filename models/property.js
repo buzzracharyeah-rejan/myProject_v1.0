@@ -16,18 +16,13 @@ const propertySchema = new Schema(
       min: 5,
       max: 30,
     },
-    location: {
-      type: String,
-      required: [true, 'property address required'],
-      trim: true,
-    },
     description: {
       type: String,
       trim: true,
       min: 5,
       max: 300,
     },
-    location_geoJSON: {
+    location: {
       type: {
         type: String,
         enum: ['Point'],
@@ -36,6 +31,11 @@ const propertySchema = new Schema(
       coordinates: {
         type: [Number],
         required: true,
+      },
+      address: {
+        type: String,
+        required: [true, 'location name required'],
+        trim: true,
       },
     },
     valuation: {

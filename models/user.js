@@ -9,7 +9,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'user role required'],
       default: 'buyer',
-      enum: ['admin', 'buyer', 'seller'],
+      enum: ['admin', 'owner', 'buyer'],
     },
     firstname: {
       type: String,
@@ -50,7 +50,7 @@ const userSchema = new Schema(
     },
     displayAddress: {
       type: String,
-      required: [true, 'dislay address required'],
+      required: [true, 'display address required'],
       trim: true,
     },
     emailVerifiedAt: {
