@@ -37,10 +37,33 @@ exports.getComments = async (req, res, next) => {
     const comments = await Comment.aggregate([
       {
         $lookup: {
-          from: 'User',
+          from: 'users',
           localField: 'owner',
           foreignField: '_id',
           as: 'owner_details',
+        },
+      },
+      {
+        $lookup: {
+          from: 'properties',
+          localField: 'property',
+          foreignField: '_id',
+          as: 'property_details',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          text: 1,
+          owner_details: {
+            firstname: 1,
+            lastname: 1,
+          },
+          property_details: {
+            propertyType: 1,
+            propertyName: 1,
+            valuation: 1,
+          },
         },
       },
     ]);

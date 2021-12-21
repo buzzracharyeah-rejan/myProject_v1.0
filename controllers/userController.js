@@ -6,7 +6,7 @@ exports.updateUser = async (req, res, next) => {
   const _id = req.params.id;
   try {
     const user = await User.findByIdAndUpdate({ _id }, { $set: { ...req.body } }, { new: true });
-    console.log(user);
+    // console.log(user);
     responseSuccess(res, httpStatus.OK, 'update user', 'update user success', user);
   } catch (error) {
     responseError(res, httpStatus.BAD_REQUEST, 'update user', 'update user failed');

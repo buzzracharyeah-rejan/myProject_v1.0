@@ -9,15 +9,19 @@ exports.createProperty = async (req, res, next) => {
     const address = req.body.address;
     const response = await getCoordinates(address);
     const { longitude, latitude } = response.data[0];
+    // console.log(longitude, latitude);
 
     //delete address from req.body
     delete req.body.address;
+    // console.log(typeof address);
 
     const property = new Property({
       ...req.body,
       location: {
-        type: 'Point',
-        coordinates: [longitude, latitude],
+        location_geoJSON: {
+          type: 'Point',
+          coordinates: [longitude, latitude],
+        },
         address,
       },
     });
@@ -25,7 +29,8 @@ exports.createProperty = async (req, res, next) => {
 
     responseSuccess(res, httpStatus.CREATED, 'add property', 'new property created', property);
   } catch (error) {
-    responseError(res, httpStatus.BAD_REQUEST, 'error', error.message);
+    console.error(error.stack);
+    responseError(res, httpStatus.BAD_REQUEST, 'add property', error.message);
   }
 };
 
@@ -58,7 +63,7 @@ exports.updateProperty = async (req, res, next) => {
     if (!isValid) throw new Error();
 
     const property = await Property.findById({ _id });
-    console.log(property);
+    // console.log(property);
     updates.forEach((update) => (property[update] = req.body[update]));
     // await updatedProperty.save();
     responseSuccess(res, httpStatus.NO_CONTENT, 'update property', 'property updated', updatedPropety);
@@ -75,5 +80,23 @@ exports.deleteProperty = async (req, res, next) => {
     responseSuccess(res, httpStatus.NO_CONTENT, 'delete property', 'property deleted successful', property);
   } catch (error) {
     responseError(res, httpStatus.BAD_REQUEST, 'error', 'delete property failed');
+  }
+};
+
+exports.searchProperty = async (req, res, next) => {
+  try {
+    const location = req.query.location;
+    const response = await getCoordinates(location);
+    const { longitude, latitude } = response.data[0];
+    // console.log(longitude, latitude);
+
+    const property = await Property.find({
+      'location.location_geoJSON': { $geoWithin: { $centerSphere: [[longitude, latitude], 10 / 3963.2] } },
+    });
+    // console.log(property);
+    responseSuccess(res, httpStatus.OK, 'search location', 'search location success', property);
+  } catch (error) {
+    console.error(error.stack);
+    responseError(res, httpStatus.BAD_REQUEST, 'search location', 'search location failed');
   }
 };

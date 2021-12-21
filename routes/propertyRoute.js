@@ -19,4 +19,5 @@ router
   // delete property
   .delete(propertyController.deleteProperty);
 
+router.get('/api/searchProperty', propertyController.searchProperty);
 module.exports = router;

@@ -23,14 +23,16 @@ const propertySchema = new Schema(
       max: 300,
     },
     location: {
-      type: {
-        type: String,
-        enum: ['Point'],
-        required: true,
-      },
-      coordinates: {
-        type: [Number],
-        required: true,
+      location_geoJSON: {
+        type: {
+          type: String,
+          enum: ['Point'],
+          required: true,
+        },
+        coordinates: {
+          type: [Number],
+          required: true,
+        },
       },
       address: {
         type: String,
@@ -52,6 +54,8 @@ const propertySchema = new Schema(
   { timestamps: { createdAt: 'created_at', updatedAt: 0 } }
 );
 
+// create a 2dsphere index
+propertySchema.index({ 'location.location_geoJSON': '2dsphere' });
 const Property = mongoose.model('Property', propertySchema);
 
 module.exports = Property;
