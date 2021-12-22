@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { generateToken } = require('../utils/generateToken');
 
 const { Schema } = mongoose;
 
@@ -42,7 +43,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'password required'],
       trim: true,
-      validate: function (password) {},
+      // select: false
     },
     contactNumber: {
       type: Number,
@@ -57,18 +58,23 @@ const userSchema = new Schema(
       type: Date,
       required: false,
       default: null,
+      select: false,
     },
     isFirstLogin: {
       type: Date,
       required: false,
       default: null,
+      select: false,
     },
     lastLoginAt: {
       type: Date,
       required: false,
       default: null,
+      select: false,
     },
-    token: [String],
+    token: {
+      type: [String],
+    },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 0 } }
 );
@@ -86,11 +92,21 @@ userSchema.statics.validatePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.addToken = async function (token) {
+// userSchema.methods.addToken = async function (token) {
+//   const user = this;
+//   user.token.push(token);
+//   await user.save();
+//   return user;
+// };
+
+userSchema.methods.generateToken = async function () {
   const user = this;
+  const payload = { _id: user._id, userType: user.userType };
+  const token = await generateToken(payload);
   user.token.push(token);
   await user.save();
-  return user;
+  // console.log({ user, token });
+  return { user, token };
 };
 
 const User = mongoose.model('User', userSchema);

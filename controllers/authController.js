@@ -1,6 +1,6 @@
 const httpStatus = require('../constants/generalConstants');
 const { responseSuccess, responseError } = require('../helpers/responseHelper');
-const { generateToken } = require('../utils/generateToken');
+const { formatTkn } = require('../utils/formatTkn');
 const User = require('../models/user');
 
 exports.signup = async (req, res, next) => {
@@ -16,20 +16,12 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const user = req.user;
-    const { _id, userType } = user;
-    const token = await generateToken({ _id, userType });
-    // console.log(token);
+    const { user, token } = await req.user.generateToken();
 
-    if (!token) throw new Error();
+    if (!user) throw new Error();
 
-    const myUser = await User.findOne(_id);
-    const updatedUser = await myUser.addToken(token);
-    // console.log(updatedUser);
-
-    res.setHeader('Authorization', 'Bearer ' + token);
-
-    responseSuccess(res, httpStatus.OK, 'user login', 'user login success', updatedUser);
+    res.setHeader('Authorization', formatTkn(token));
+    responseSuccess(res, httpStatus.OK, 'user login', 'user login success', user);
   } catch (error) {
     console.error(error.stack);
     responseError(res, httpStatus.BAD_REQUEST, 'user login', 'user login falied');
