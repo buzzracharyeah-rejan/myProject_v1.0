@@ -68,6 +68,7 @@ const userSchema = new Schema(
       required: false,
       default: null,
     },
+    token: [String],
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 0 } }
 );
@@ -77,11 +78,19 @@ userSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
+
   next();
 });
 
 userSchema.statics.validatePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.methods.addToken = async function (token) {
+  const user = this;
+  user.token.push(token);
+  await user.save();
+  return user;
 };
 
 const User = mongoose.model('User', userSchema);

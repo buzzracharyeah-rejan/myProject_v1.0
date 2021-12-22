@@ -36,6 +36,7 @@ exports.getUser = async (req, res, next) => {
   try {
     const _id = req.params.id;
     const user = await User.findById(_id);
+    if (!user) throw new Error();
     responseSuccess(res, httpStatus.OK, 'get user', 'get user success', user);
   } catch (error) {
     responseError(res, httpStatus.BAD_REQUEST, 'get user', 'get user failed');

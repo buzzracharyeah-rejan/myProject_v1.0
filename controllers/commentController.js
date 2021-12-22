@@ -77,6 +77,7 @@ exports.getComment = async (req, res, next) => {
   try {
     const _id = req.params.id;
     const comments = await Comment.findByIdAndUpdate(_id);
+    if (!comments) throw new Error();
     responseSuccess(res, httpStatus.OK, 'fetch comments', 'fetch comments success', comments);
   } catch (error) {
     responseError(req, httpStatus.BAD_REQUEST, 'fetch comments', 'fetch comments failed');

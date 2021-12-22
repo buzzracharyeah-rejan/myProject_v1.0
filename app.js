@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv').config();
+const passport = require('passport');
 
 const server = require('./server');
 const authRoute = require('./routes/authRoute');
@@ -12,6 +13,9 @@ const app = express();
 //midddlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// init passport;
+app.use(passport.initialize());
 
 // register routes
 app.use(authRoute);
