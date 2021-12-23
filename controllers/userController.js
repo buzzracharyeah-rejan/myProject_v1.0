@@ -3,7 +3,8 @@ const { responseSuccess, responseError } = require('../helpers/responseHelper');
 const httpStatus = require('../constants/generalConstants');
 
 exports.updateUser = async (req, res, next) => {
-  const _id = req.params.id;
+  // const _id = req.params.id;
+  const _id = req.user._id;
   try {
     const user = await User.findByIdAndUpdate({ _id }, { $set: { ...req.body } }, { new: true });
     // console.log(user);
@@ -14,7 +15,8 @@ exports.updateUser = async (req, res, next) => {
 };
 
 exports.deleteUser = async (req, res, next) => {
-  const _id = req.params.id;
+  const _id = req.user._id;
+  // const _id = req.params.id;
   try {
     const user = await User.findByIdAndDelete(_id);
     responseSuccess(res, httpStatus.CREATED, 'delete user', 'delete user success', user);
@@ -34,7 +36,8 @@ exports.getAllUsers = async (req, res, next) => {
 
 exports.getUser = async (req, res, next) => {
   try {
-    const _id = req.params.id;
+    // const _id = req.params.id;
+    const _id = req.user._id;
     const user = await User.findById(_id);
     if (!user) throw new Error();
     responseSuccess(res, httpStatus.OK, 'get user', 'get user success', user);

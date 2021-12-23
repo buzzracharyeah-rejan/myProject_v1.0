@@ -72,7 +72,7 @@ exports.updateProperty = async (req, res, next) => {
     // await updatedProperty.save();
     responseSuccess(res, httpStatus.NO_CONTENT, 'update property', 'property updated', updatedPropety);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     responseError(res, httpStatus.BAD_REQUEST, 'error', 'update property failed');
   }
 };
@@ -101,7 +101,7 @@ exports.searchProperty = async (req, res, next) => {
 
     const response = await getCoordinates(location);
     const { longitude, latitude } = response.data[0];
-    console.log(longitude, latitude);
+    // console.log(longitude, latitude);
 
     const property = await Property.find({
       'location.location_geoJSON': { $geoWithin: { $centerSphere: [[longitude, latitude], mile / 3963.2] } },

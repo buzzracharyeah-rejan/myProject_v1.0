@@ -10,7 +10,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'user role required'],
       default: 'buyer',
-      enum: ['admin', 'owner', 'buyer'],
+      enum: ['admin', 'seller', 'buyer'],
     },
     firstname: {
       type: String,
@@ -72,7 +72,7 @@ const userSchema = new Schema(
       default: null,
       select: false,
     },
-    token: {
+    tokens: {
       type: [String],
     },
   },
@@ -88,7 +88,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.statics.validatePassword = async function (candidatePassword) {
+userSchema.methods.validatePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -103,7 +103,7 @@ userSchema.methods.generateToken = async function () {
   const user = this;
   const payload = { _id: user._id, userType: user.userType };
   const token = await generateToken(payload);
-  user.token.push(token);
+  user.tokens.push(token);
   await user.save();
   // console.log({ user, token });
   return { user, token };
