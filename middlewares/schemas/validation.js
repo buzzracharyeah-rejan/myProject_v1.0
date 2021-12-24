@@ -11,19 +11,19 @@ const userSchema = Joi.object({
     .trim()
     .lowercase()
     .required(),
-  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-  contactNumber: Joi.number(),
+  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+  contactNumber: Joi.number().required(),
   displayAddress: Joi.string().alphanum().min(5).max(30).trim().lowercase().required(),
   userType: Joi.string().valid('admin', 'buyer', 'seller'),
 });
 
 const propertySchema = Joi.object({
-  propertyName: Joi.string().min(5).max(30).trim().lowercase().required(),
-  propertyType: Joi.string().valid('rent', 'sale'),
+  propertyName: Joi.string().min(5).max(100).trim().lowercase().required(),
+  propertyType: Joi.string().valid('rent', 'sale').required(),
   address: Joi.string().min(5).max(30).trim().lowercase().required(),
   description: Joi.string().trim().lowercase().required(),
-  valuation: Joi.number(),
-  isSold: Joi.boolean(),
+  valuation: Joi.number().required(),
+  isSold: Joi.boolean().required(),
   owner: Joi.string(),
 });
 

@@ -8,15 +8,10 @@ const {
   getComments,
 } = require('../controllers/commentController');
 
-// const { isAdmin, isOwner, isBuyer } = require('../controllers/authController');
-const { isAuthorized } = require('../controllers/authController');
+const { isBuyer } = require('../middlewares/passport');
 
-router.route('/api/comment').get(isAuthorized, getComments).post(isAuthorized, createComment);
+router.route('/api/comment').get(isBuyer, getComments).post(isBuyer, createComment);
 
-router
-  .route('/api/comment/:id')
-  .get(isAuthorized, getComment)
-  .patch(isAuthorized, updateComment)
-  .delete(isAuthorized, deleteComment);
+router.route('/api/comment/:id').get(isBuyer, getComment).patch(isBuyer, updateComment).delete(isBuyer, deleteComment);
 
 module.exports = router;

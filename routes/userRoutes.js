@@ -3,10 +3,7 @@ const router = express.Router();
 
 const userController = require('../controllers/userController');
 const { validateUserSchema } = require('../middlewares/validate');
-const { isAuthorized, isAdmin, isBuyer } = require('../controllers/authController');
-// const { isAdmin, isOwner, isBuyer } = require('../controllers/authController');
-
-router.route('/api/user/:id').get(isBuyer, userController.getUser);
+const { isAdmin, isBuyer } = require('../middlewares/passport');
 
 router
   .route('/api/user')

@@ -3,8 +3,7 @@ const router = express.Router();
 
 const propertyController = require('../controllers/propertyController');
 const { validatePropertySchema } = require('../middlewares/validate');
-// const { isAuthorized } = require('../controllers/authController');
-const { isAdmin, isSeller, isBuyer } = require('../controllers/authController');
+const { isSeller, isBuyer } = require('../middlewares/passport');
 
 router
   .route('/api/property')

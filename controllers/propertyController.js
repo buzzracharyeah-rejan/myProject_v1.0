@@ -7,6 +7,7 @@ const { kmConversion } = require('../utils/unit');
 
 exports.createProperty = async (req, res, next) => {
   try {
+    const _id = req.user._id;
     const address = req.body.address;
     const response = await getCoordinates(address);
     const { longitude, latitude } = response.data[0];
@@ -18,6 +19,7 @@ exports.createProperty = async (req, res, next) => {
 
     const property = new Property({
       ...req.body,
+      owner: _id,
       location: {
         location_geoJSON: {
           type: 'Point',
@@ -28,19 +30,20 @@ exports.createProperty = async (req, res, next) => {
     });
     await property.save();
 
-    responseSuccess(res, httpStatus.CREATED, 'add property', 'new property created', property);
+    return responseSuccess(res, httpStatus.CREATED, 'add property', 'new property created', property);
   } catch (error) {
     console.error(error.stack);
-    responseError(res, httpStatus.BAD_REQUEST, 'add property', error.message);
+    return responseError(res, httpStatus.BAD_REQUEST, 'add property', error.message);
   }
 };
 
 exports.getProperties = async (req, res, next) => {
   try {
     const properties = await Property.find();
-    responseSuccess(res, httpStatus.OK, 'Get Property', 'List of properties', properties);
+    if (!properties) throw new Error();
+    return responseSuccess(res, httpStatus.OK, 'Get Property', 'List of properties', properties);
   } catch (error) {
-    responseError(res, httpStatus.BAD_REQUEST, 'get property', 'properties listing failed');
+    return responseError(res, httpStatus.BAD_REQUEST, 'get property', 'properties listing failed');
   }
 };
 
@@ -50,30 +53,63 @@ exports.getProperty = async (req, res, next) => {
     const property = await Property.findById(_id);
     if (!property) throw new Error();
 
-    responseSuccess(res, httpStatus.OK, 'Get Property', 'List of properties', property);
+    return responseSuccess(res, httpStatus.OK, 'Get Property', 'List of properties', property);
   } catch (error) {
-    responseError(res, httpStatus.BAD_REQUEST, 'get property', 'properties listing failed');
+    return responseError(res, httpStatus.BAD_REQUEST, 'get property', 'properties listing failed');
   }
 };
 
+// exports.updateProperty = async (req, res, next) => {
+//   try {
+//     const _id = req.params.id;
+//     const allowedUpdates = ['propertyType', 'propertyName', 'description', 'location', 'valuation', 'isSold', 'owner'];
+//     const updates = Object.keys(req.body);
+//     const isValid = updates.every((update) => allowedUpdates.includes(update));
+
+//     if (!isValid) throw new Error();
+
+//     const property = await Property.findById(_id);
+//     if (!property) throw new Error();
+//     // console.log(property);
+//     updates.forEach((update) => (property[update] = req.body[update]));
+//     // await updatedProperty.save();
+//     return responseSuccess(res, httpStatus.NO_CONTENT, 'update property', 'property updated', updatedPropety);
+//   } catch (error) {
+//     // console.log(error);
+//     return responseError(res, httpStatus.BAD_REQUEST, 'error', 'update property failed');
+//   }
+// };
+
 exports.updateProperty = async (req, res, next) => {
   try {
-    const _id = req.params.id;
-    const allowedUpdates = ['propertyType', 'propertyName', 'description', 'location', 'valuation', 'isSold', 'owner'];
-    const updates = Object.keys(req.body);
-    const isValid = updates.every((update) => allowedUpdates.includes(update));
+    const userId = req.user._id;
+    const propertyId = req.params.id;
 
-    if (!isValid) throw new Error();
+    console.log({ userId, propertyId });
 
-    const property = await Property.findById(_id);
-    if (!property) throw new Error();
+    const { propertyName, propertyType, address, description, valuation, isSold } = req.body;
+    // const property = await Property.findOne({ _id: propertyId, owner: userId });
     // console.log(property);
-    updates.forEach((update) => (property[update] = req.body[update]));
-    // await updatedProperty.save();
-    responseSuccess(res, httpStatus.NO_CONTENT, 'update property', 'property updated', updatedPropety);
+    // res.status(200).send(property);
+    const updatedProperty = await Property.findOneAndUpdate(
+      { _id: propertyId, owner: userId },
+      {
+        $set: {
+          propertyName,
+          propertyType,
+          address,
+          description,
+          valuation,
+          isSold,
+        },
+      },
+      { new: true }
+    );
+    if (!updatedProperty) throw new Error();
+
+    return responseSuccess(res, httpStatus.CREATED, 'update property', 'update property success', updatedProperty);
   } catch (error) {
-    // console.log(error);
-    responseError(res, httpStatus.BAD_REQUEST, 'error', 'update property failed');
+    return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'update property', 'update property failed');
   }
 };
 
@@ -81,9 +117,15 @@ exports.deleteProperty = async (req, res, next) => {
   try {
     const _id = req.params.id;
     const property = await Property.findByIdAndDelete(_id);
-    responseSuccess(res, httpStatus.NO_CONTENT, 'delete property', 'property deleted successful', property);
+    // console.log(property);
+
+    if (!property) throw new Error();
+    // console.log('delete property');
+
+    return responseSuccess(res, httpStatus.ACCEPTED, 'delete property', 'property deleted successful', property);
+    // res.status(304).send('delete successful');
   } catch (error) {
-    responseError(res, httpStatus.BAD_REQUEST, 'error', 'delete property failed');
+    return responseError(res, httpStatus.BAD_REQUEST, 'error', 'delete property failed');
   }
 };
 
@@ -119,10 +161,11 @@ exports.searchProperty = async (req, res, next) => {
     //     spherical: true,
     //   },
     // ]);
+    if (!property) throw new Error();
 
-    responseSuccess(res, httpStatus.OK, 'search location', 'search location success', property);
+    return responseSuccess(res, httpStatus.OK, 'search location', 'search location success', property);
   } catch (error) {
     console.error(error.stack);
-    responseError(res, httpStatus.BAD_REQUEST, 'search location', 'search location failed');
+    return responseError(res, httpStatus.BAD_REQUEST, 'search location', 'search location failed');
   }
 };

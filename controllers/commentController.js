@@ -4,21 +4,29 @@ const httpStatus = require('../constants/generalConstants');
 
 exports.createComment = async (req, res, next) => {
   try {
-    const comment = new Comment(req.body);
+    const { text, property } = req.body;
+    const id = req.user._id;
+
+    const comment = new Comment({ text, property, owner: id });
     await comment.save();
-    responseSuccess(res, httpStatus.CREATED, 'create comment', 'create comment success', comment);
+
+    return responseSuccess(res, httpStatus.CREATED, 'create comment', 'create comment success', comment);
   } catch (error) {
-    responseError(res, httpStatus.BAD_REQUEST, 'create comment', 'create comment failed');
+    return responseError(res, httpStatus.BAD_REQUEST, 'create comment', 'create comment failed');
   }
 };
 
 exports.updateComment = async (req, res, next) => {
   try {
     const _id = req.params.id;
-    const comment = await Comment.findOneAndUpdate(_id, { $set: { ...req.body } });
-    responseSuccess(res, httpStatus.NO_CONTENT, 'update comment', 'update comment success', comment);
+    const { text } = req.body;
+    const comment = await Comment.findOneAndUpdate(_id, { $set: { text } });
+
+    if (!comment) throw new Error();
+
+    return responseSuccess(res, httpStatus.NO_CONTENT, 'update comment', 'update comment success', comment);
   } catch (error) {
-    responseError(res, httpStatus.BAD_REQUEST, 'update comment', 'update comment failed');
+    return responseError(res, httpStatus.BAD_REQUEST, 'update comment', 'update comment failed');
   }
 };
 
@@ -26,9 +34,12 @@ exports.deleteComment = async (req, res, next) => {
   try {
     const _id = req.params.id;
     const comment = await Comment.findOneAndDelete(_id);
-    responseSuccess(res, httpStatus.NO_CONTENT, 'delete comment', 'delete comment success', comment);
+
+    if (!comment) throw new Error();
+
+    return responseSuccess(res, httpStatus.NO_CONTENT, 'delete comment', 'delete comment success', comment);
   } catch (error) {
-    responseError(res, httpStatus.BAD_REQUEST, 'delete comment', 'delete comment failed');
+    return responseError(res, httpStatus.BAD_REQUEST, 'delete comment', 'delete comment failed');
   }
 };
 
@@ -67,9 +78,12 @@ exports.getComments = async (req, res, next) => {
         },
       },
     ]);
-    responseSuccess(res, httpStatus.OK, 'fetch comments', 'fetch comments success', comments);
+
+    if (!comments) throw new Error();
+
+    return responseSuccess(res, httpStatus.OK, 'fetch comments', 'fetch comments success', comments);
   } catch (error) {
-    responseError(req, httpStatus.BAD_REQUEST, 'fetch comments', 'fetch comments failed');
+    return responseError(req, httpStatus.BAD_REQUEST, 'fetch comments', 'fetch comments failed');
   }
 };
 
@@ -77,9 +91,11 @@ exports.getComment = async (req, res, next) => {
   try {
     const _id = req.params.id;
     const comments = await Comment.findByIdAndUpdate(_id);
+
     if (!comments) throw new Error();
-    responseSuccess(res, httpStatus.OK, 'fetch comments', 'fetch comments success', comments);
+
+    return responseSuccess(res, httpStatus.OK, 'fetch comments', 'fetch comments success', comments);
   } catch (error) {
-    responseError(req, httpStatus.BAD_REQUEST, 'fetch comments', 'fetch comments failed');
+    return responseError(req, httpStatus.BAD_REQUEST, 'fetch comments', 'fetch comments failed');
   }
 };

@@ -4,9 +4,7 @@ const httpStatus = require('../constants/generalConstants');
 // const authController = require('../controllers/authController');
 const { validateUserSchema } = require('../middlewares/validate');
 const authController = require('../controllers/authController');
-const { responseSuccess, responseError } = require('../helpers/responseHelper');
-const { generateToken } = require('../utils/generateToken');
-const { isAuthenticated } = require('../controllers/authController');
+const { isAuthenticated } = require('../middlewares/passport');
 
 router.post('/api/signup', validateUserSchema, authController.signup);
 

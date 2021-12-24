@@ -1,14 +1,14 @@
-// const JwtStrategy = require('passport-jwt').Strategy;
-// const ExtractJwt = require('passport-jwt').ExtractJwt;
-
 const passport = require('passport');
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const { Strategy: LocalStrategy } = require('passport-local');
-const debug = require('debug')('passport');
 // require('dotenv').config();
 
 const User = require('../models/user');
+const { responseError } = require('../helpers/responseHelper');
+const httpStatus = require('../constants/generalConstants');
+const roles = require('../constants/roles');
 
+//! passport local strategy
 passport.use(
   'local',
   new LocalStrategy({ usernameField: 'email', passwordField: 'password' }, async (email, password, done) => {
@@ -29,6 +29,8 @@ passport.use(
   })
 );
 
+//? passport-jwt strategy
+
 const options = {};
 options.secretOrKey = process.env.SECRET;
 options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
@@ -46,3 +48,103 @@ passport.use(
     }
   })
 );
+
+exports.isAuthenticated = async (req, res, next) => {
+  await passport.authenticate('local', { session: false }, (err, user, info) => {
+    if (info && info.title) {
+      const { title, message } = info;
+      return responseError(res, httpStatus.UNAUTHORIZED, title, message);
+    }
+
+    if (err) {
+      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'error', err.message);
+    }
+    req.user = user;
+    next();
+  })(req, res, next);
+};
+
+exports.isAuthorized = async (req, res, next) => {
+  // console.log('is Authorized');
+  await passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    // console.log({ err, user, info });
+    if (err) {
+      return responseError(res, httpStatus.UNAUTHORIZED, 'error', err.message);
+    }
+    if (!user) {
+      return responseError(res, httpStatus.UNAUTHORIZED, info.title, info.message);
+    }
+    req.user = user;
+    next();
+  })(req, res, next);
+};
+
+exports.isAdmin = async (req, res, next) => {
+  await passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    // console.log({ err, user, info });
+    if (err) {
+      return responseError(res, httpStatus.UNAUTHORIZED, 'error', err.message);
+    }
+    if (!user) {
+      return responseError(res, httpStatus.UNAUTHORIZED, info.title, info.message);
+    }
+
+    if (user.userType !== roles.ADMIN) {
+      return responseError(res, httpStatus.UNAUTHORIZED, 'error', 'unauthorized user access');
+    }
+
+    req.user = user;
+    next();
+  })(req, res, next);
+};
+
+exports.isSeller = async (req, res, next) => {
+  await passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (err) {
+      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'error', err.message);
+    }
+
+    if (!user) {
+      return responseError(res, httpStatus.UNAUTHORIZED, info.title, info.message);
+    }
+
+    if (user.userType !== roles.SELLER) {
+      if (user.userType === roles.ADMIN) {
+        req.user = user;
+        return next();
+      }
+      return responseError(res, httpStatus.UNAUTHORIZED, 'error', 'unauthorized user access');
+    }
+
+    req.user = user;
+    next();
+  })(req, res, next);
+};
+
+exports.isBuyer = async (req, res, next) => {
+  // console.log('is buyer');
+  await passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (err) {
+      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'error', err.message);
+    }
+
+    if (!user) {
+      return responseError(res, httpStatus.UNAUTHORIZED, info.title, info.message);
+    }
+
+    // console.log(user.userType !== roles.BUYER);
+
+    //buyer seller admin
+
+    if (user.userType !== roles.BUYER) {
+      if (user.userType === roles.SELLER || user.userType === roles.ADMIN) {
+        req.user = user;
+        return next();
+      }
+      return responseError(res, httpStatus.UNAUTHORIZED, 'error', 'unauthorized access');
+    }
+
+    req.user = user;
+    next();
+  })(req, res, next);
+};
