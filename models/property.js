@@ -50,6 +50,11 @@ const propertySchema = new Schema(
       default: false,
     },
     owner: { type: Schema.Types.ObjectId, ref: 'User' },
+    booked_users: {
+      type: [Schema.Types.ObjectId],
+      ref: 'User',
+      required: false,
+    },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 0 } }
 );

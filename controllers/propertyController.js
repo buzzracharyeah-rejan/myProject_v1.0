@@ -1,7 +1,10 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
+
 const { responseSuccess, responseError } = require('../helpers/responseHelper');
 const httpStatus = require('../constants/generalConstants');
 const Property = require('../models/property');
+const User = require('../models/user');
 const { getCoordinates } = require('../utils/getCoordinates');
 const { kmConversion } = require('../utils/unit');
 
@@ -50,11 +53,32 @@ exports.getProperties = async (req, res, next) => {
 exports.getProperty = async (req, res, next) => {
   try {
     const _id = req.params.id;
-    const property = await Property.findById(_id);
+    // const property = await Property.findById(_id);
+    const property = await Property.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId(_id) } },
+      { $lookup: { from: 'users', localField: 'owner', foreignField: '_id', as: 'owner_details' } },
+      {
+        $project: {
+          owner_details: {
+            _id: 0,
+            userType: 0,
+            password: 0,
+            emailVerifiedAt: 0,
+            isFirstLogin: 0,
+            lastLoginAt: 0,
+            tokens: 0,
+            created_at: 0,
+          },
+        },
+      },
+    ]);
+
+    // console.log(property);
     if (!property) throw new Error();
 
     return responseSuccess(res, httpStatus.OK, 'Get Property', 'List of properties', property);
   } catch (error) {
+    console.error(error.stack);
     return responseError(res, httpStatus.BAD_REQUEST, 'get property', 'properties listing failed');
   }
 };
@@ -117,15 +141,24 @@ exports.deleteProperty = async (req, res, next) => {
   try {
     const _id = req.params.id;
     const property = await Property.findByIdAndDelete(_id);
-    // console.log(property);
 
     if (!property) throw new Error();
-    // console.log('delete property');
 
     return responseSuccess(res, httpStatus.ACCEPTED, 'delete property', 'property deleted successful', property);
-    // res.status(304).send('delete successful');
   } catch (error) {
     return responseError(res, httpStatus.BAD_REQUEST, 'error', 'delete property failed');
+  }
+};
+
+exports.deleteAllProperties = async (req, res, next) => {
+  try {
+    const property = await Property.deleteMany({});
+
+    if (!property) throw new Error();
+
+    return responseSuccess(res, httpStatus.OK, 'delete property', 'delete property success', property);
+  } catch (error) {
+    return responseError(res, httpStatus.OK, 'delete property', 'delete property failed', property);
   }
 };
 
@@ -165,7 +198,68 @@ exports.searchProperty = async (req, res, next) => {
 
     return responseSuccess(res, httpStatus.OK, 'search location', 'search location success', property);
   } catch (error) {
-    console.error(error.stack);
+    // console.error(error.stack);
     return responseError(res, httpStatus.BAD_REQUEST, 'search location', 'search location failed');
+  }
+};
+
+exports.bookProperty = async (req, res, next) => {
+  try {
+    console.log('book property');
+    const propertyId = req.params.id;
+    const userId = req.user._id;
+
+    const property = await Property.findByIdAndUpdate(
+      { _id: propertyId },
+      { $addToSet: { booked_users: userId } },
+      { new: true }
+    );
+
+    if (!property) throw new Error();
+
+    responseSuccess(res, httpStatus.ACCEPTED, 'book property', 'book property success', property);
+  } catch (error) {
+    console.error(error.stack);
+    return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'book property', 'book property failed');
+  }
+};
+
+exports.buyProperty = async (req, res, next) => {
+  try {
+    const { price } = req.query;
+    const userId = req.user._id;
+    const propertyId = req.params.id;
+
+    const property = await Property.findOne({ _id: propertyId });
+
+    if (price < property.valuation) {
+      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'bid not successful', ' please match the valuation');
+    }
+
+    if (property.isSold) {
+      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'buy property', 'property sold out');
+    }
+
+    const updatedProperty = await Property.findByIdAndUpdate(
+      { _id: propertyId },
+      { $set: { isSold: true, owner: userId, booked_users: [] } },
+      { new: true }
+    );
+
+    const updatedOwner = await User.findByIdAndUpdate(
+      { _id: userId },
+      {
+        properties: { $addToSet: { propertyId } },
+      },
+      { new: true }
+    );
+
+    return responseSuccess(res, httpStatus.ACCEPTED, 'buy property', 'purchase property success', {
+      user: updatedOwner,
+      property: updatedProperty,
+    });
+  } catch (error) {
+    console.error(error.stack);
+    responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'buy property', 'property purchase failed');
   }
 };

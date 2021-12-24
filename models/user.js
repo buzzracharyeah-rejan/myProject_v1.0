@@ -75,6 +75,11 @@ const userSchema = new Schema(
     tokens: {
       type: [String],
     },
+    properties: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'Property',
+      required: false,
+    },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 0 } }
 );

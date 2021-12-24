@@ -3,12 +3,13 @@ const router = express.Router();
 
 const propertyController = require('../controllers/propertyController');
 const { validatePropertySchema } = require('../middlewares/validate');
-const { isSeller, isBuyer } = require('../middlewares/passport');
+const { isSeller, isBuyer, isAdmin, isValidBuyer } = require('../middlewares/passport');
 
 router
   .route('/api/property')
   .get(isBuyer, propertyController.getProperties)
-  .post(isSeller, validatePropertySchema, propertyController.createProperty);
+  .post(isSeller, validatePropertySchema, propertyController.createProperty)
+  .delete(isAdmin, propertyController.deleteAllProperties);
 
 router
   .route('/api/property/:id')
@@ -17,4 +18,8 @@ router
   .delete(isSeller, propertyController.deleteProperty);
 
 router.get('/api/searchProperty', isBuyer, propertyController.searchProperty);
+
+router.get('/api/bookProperty/:id', isValidBuyer, propertyController.bookProperty);
+
+router.get('/api/buyProperty/:id', isValidBuyer, propertyController.buyProperty);
 module.exports = router;

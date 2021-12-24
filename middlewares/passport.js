@@ -148,3 +148,22 @@ exports.isBuyer = async (req, res, next) => {
     next();
   })(req, res, next);
 };
+
+exports.isValidBuyer = async (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (err) {
+      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'error', err.message);
+    }
+
+    if (!user) {
+      return responseError(res, httpStatus.UNAUTHORIZED, info.title, info.message);
+    }
+
+    if (user.userType !== roles.BUYER) {
+      return responseError(res, httpStatus.UNAUTHORIZED, 'error', 'unauthorized access');
+    }
+
+    req.user = user;
+    next();
+  })(req, res, next);
+};
