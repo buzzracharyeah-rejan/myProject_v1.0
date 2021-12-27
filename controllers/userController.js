@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const { responseSuccess, responseError } = require('../helpers/responseHelper');
 const httpStatus = require('../constants/generalConstants');
+const roles = require('../constants/roles');
 
 exports.updateUser = async (req, res, next) => {
   // const _id = req.params.id;
@@ -52,5 +53,17 @@ exports.getUser = async (req, res, next) => {
     return responseSuccess(res, httpStatus.OK, 'get user', 'get user success', user);
   } catch (error) {
     return responseError(res, httpStatus.BAD_REQUEST, 'get user', 'get user failed');
+  }
+};
+
+exports.deleteAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.deleteMany({ userType: { $ne: roles.ADMIN } });
+
+    if (!users) throw new Error();
+
+    return responseSuccess(res, httpStatus.INTERNAL_SERVER_ERROR, 'delete users', 'delete users success', users);
+  } catch (error) {
+    return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'delete users', 'delete users failed');
   }
 };

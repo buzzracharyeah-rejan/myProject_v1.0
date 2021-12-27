@@ -19,7 +19,7 @@ router
 
 router.get('/api/searchProperty', isBuyer, propertyController.searchProperty);
 
-router.get('/api/bookProperty/:id', isValidBuyer, propertyController.bookProperty);
+router.get('/api/bookProperty/:id', isBuyer, propertyController.bookProperty);
 
 router.get('/api/buyProperty/:id', isValidBuyer, propertyController.buyProperty);
 module.exports = router;

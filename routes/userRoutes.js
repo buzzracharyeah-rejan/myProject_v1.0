@@ -11,6 +11,8 @@ router
   .delete(isBuyer, userController.deleteUser)
   .patch(isBuyer, validateUserSchema, userController.updateUser);
 
+router.delete('/api/user/deleteAll', isAdmin, userController.deleteAllUsers);
+
 router.get('/api/user/profile', isBuyer, userController.getUser);
 
 module.exports = router;

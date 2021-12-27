@@ -205,17 +205,24 @@ exports.searchProperty = async (req, res, next) => {
 
 exports.bookProperty = async (req, res, next) => {
   try {
-    console.log('book property');
     const propertyId = req.params.id;
     const userId = req.user._id;
+    // console.log({ propertyId, userId });
 
+    //! not working
     const property = await Property.findByIdAndUpdate(
-      { _id: propertyId },
+      { _id: propertyId, owner: { $ne: userId } },
       { $addToSet: { booked_users: userId } },
       { new: true }
     );
+    // const property = await Property.aggregate([
+    //   {
+    //     $match: { _id: mongoose.Types.ObjectId(propertyId), owner: { $ne: userId } },
+    //   },
+    //   { $addToSet: { booked_users: userId } },
+    // ]);
 
-    if (!property) throw new Error();
+    if (property.length < 1) throw new Error();
 
     responseSuccess(res, httpStatus.ACCEPTED, 'book property', 'book property success', property);
   } catch (error) {
@@ -226,13 +233,15 @@ exports.bookProperty = async (req, res, next) => {
 
 exports.buyProperty = async (req, res, next) => {
   try {
-    const { price } = req.query;
+    const price = parseInt(req.query.price);
     const userId = req.user._id;
     const propertyId = req.params.id;
 
     const property = await Property.findOne({ _id: propertyId });
 
-    if (price < property.valuation) {
+    // console.log(property.valuation === price);
+
+    if (price !== property.valuation) {
       return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'bid not successful', ' please match the valuation');
     }
 
@@ -245,11 +254,15 @@ exports.buyProperty = async (req, res, next) => {
       { $set: { isSold: true, owner: userId, booked_users: [] } },
       { new: true }
     );
+    // property.isSold = true;
+    // property.owner = userId;
+    // property.booked_users = [];
+    // await property.save();
 
     const updatedOwner = await User.findByIdAndUpdate(
       { _id: userId },
       {
-        properties: { $addToSet: { propertyId } },
+        properties: { $addToSet: { propertyId: mongoose.Types.ObjectId(propertyId) } },
       },
       { new: true }
     );
