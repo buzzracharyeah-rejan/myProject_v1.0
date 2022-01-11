@@ -11,7 +11,7 @@ exports.validateUserSchema = async (req, res, next) => {
     next();
   } catch (error) {
     // console.error(error.stack);
-    responseError(res, httpStatus.BAD_REQUEST, 'validation error', error.message);
+    responseError(res, httpStatus.OK, 'validation error', error.message);
   }
 };
 
@@ -22,6 +22,6 @@ exports.validatePropertySchema = async (req, res, next) => {
     req.body = isValidate.value;
     next();
   } catch (error) {
-    responseError(res, httpStatus.BAD_REQUEST, 'validation error', error.message);
+    responseError(res, httpStatus.OK, 'validation error', error.message);
   }
 };

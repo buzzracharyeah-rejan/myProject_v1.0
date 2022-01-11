@@ -107,7 +107,7 @@ userSchema.methods.validatePassword = async function (candidatePassword) {
 userSchema.methods.generateToken = async function () {
   const user = this;
   const payload = { _id: user._id, userType: user.userType };
-  const token = await generateToken(payload);
+  const token = await generateToken(payload, '15m');
   user.tokens.push(token);
   await user.save();
   // console.log({ user, token });

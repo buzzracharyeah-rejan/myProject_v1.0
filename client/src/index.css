@@ -1,0 +1,12 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  /* background: linear-gradient(130deg, #ee9ca7, #ffdde1); */
+}
+.app-main {
+  padding-left: 320px;
+}

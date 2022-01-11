@@ -11,4 +11,6 @@ router.post('/api/signup', validateUserSchema, authController.signup);
 //! user login using passport-local
 router.post('/api/login', isAuthenticated, authController.setToken);
 
+router.post('/api/refreshToken', authController.verifyRefreshToken);
+
 module.exports = router;

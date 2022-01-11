@@ -9,4 +9,4 @@ exports.validateToken = async (token) => {
   return await jwt.verify(token, process.env.SECRET);
 };
 
-exports.extractToken = (res) => res.headers['authentication'].split(' ')[0];
+// exports.extractToken = (res) => res.headers['authentication'].split(' ')[0];
