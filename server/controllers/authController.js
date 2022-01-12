@@ -10,6 +10,7 @@ const Token = require('../models/token');
 
 exports.signup = async (req, res, next) => {
   try {
+    console.log(req.body);
     const user = new User(req.body);
     await user.save();
     return responseSuccess(res, httpStatus.CREATED, 'signup', 'user signup success', user);

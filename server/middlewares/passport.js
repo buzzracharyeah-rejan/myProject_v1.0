@@ -11,22 +11,26 @@ const roles = require('../constants/roles');
 //! passport local strategy
 passport.use(
   'local',
-  new LocalStrategy({ usernameField: 'email', passwordField: 'password' }, async (email, password, done) => {
-    // debug('passport local');
-    // console.log('passport local');
-    try {
-      const user = await User.findOne({ email });
-      // console.log(user);
-      if (!user) done(null, false, { title: 'error', message: 'invalid email or password' });
+  new LocalStrategy(
+    { usernameField: 'email', passwordField: 'password' },
+    async (email, password, done) => {
+      // debug('passport local');
+      // console.log('passport local');
+      try {
+        const user = await User.findOne({ email });
+        // console.log(user);
+        if (!user) done(null, false, { title: 'error', message: 'invalid email or password' });
 
-      const isVerified = await user.validatePassword(password);
-      if (!isVerified) done(null, false, { title: 'error', message: 'invalid email or password' });
+        const isVerified = await user.validatePassword(password);
+        if (!isVerified)
+          done(null, false, { title: 'error', message: 'invalid email or password' });
 
-      done(null, user);
-    } catch (error) {
-      done(error);
+        done(null, user);
+      } catch (error) {
+        done(error);
+      }
     }
-  })
+  )
 );
 
 //? passport-jwt strategy
@@ -51,13 +55,12 @@ passport.use(
 
 exports.isAuthenticated = async (req, res, next) => {
   await passport.authenticate('local', { session: false }, (err, user, info) => {
+    if (err) {
+      return responseError(res, httpStatus.OK, 'error', err.message);
+    }
     if (info && info.title) {
       const { title, message } = info;
-      return responseError(res, httpStatus.UNAUTHORIZED, title, message);
-    }
-
-    if (err) {
-      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'error', err.message);
+      return responseError(res, httpStatus.OK, title, message);
     }
     req.user = user;
     next();

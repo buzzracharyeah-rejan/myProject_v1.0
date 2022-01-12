@@ -12,7 +12,7 @@ const userSchema = new Schema(
       default: 'buyer',
       enum: ['admin', 'seller', 'buyer'],
     },
-    firstname: {
+    firstName: {
       type: String,
       required: [true, 'firstname required'],
       trim: true,
@@ -20,7 +20,7 @@ const userSchema = new Schema(
       maxlength: 30,
     },
 
-    lastname: {
+    lastName: {
       type: String,
       required: [true, 'lastname required'],
       trim: true,

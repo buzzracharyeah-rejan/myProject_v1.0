@@ -4,9 +4,13 @@
   box-sizing: border-box;
 }
 
-body {
-  /* background: linear-gradient(130deg, #ee9ca7, #ffdde1); */
-}
 .app-main {
   padding-left: 320px;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  /* background-image: linear-gradient(to right, #2980b9, #6dd5fa); */
+  background-color: #fcf6f5ff;
 }
