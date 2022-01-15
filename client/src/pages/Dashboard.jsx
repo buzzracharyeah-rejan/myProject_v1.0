@@ -1,5 +1,12 @@
 import React from 'react';
+import { Navbar, Hero, Footer } from '../components';
 
 export default function Dashboard() {
-  return <h1>Dashboard is here!</h1>;
+  return (
+    <>
+      <Navbar />
+      <Hero />
+      <Footer />
+    </>
+  );
 }

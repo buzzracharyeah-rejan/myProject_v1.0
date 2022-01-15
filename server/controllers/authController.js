@@ -22,13 +22,17 @@ exports.signup = async (req, res, next) => {
 
 exports.setToken = async (req, res, next) => {
   try {
+    console.log('call c');
     const { user, token } = await req.user.generateToken();
+
+    // console.log({ user, token });
 
     // gen a refresh token
     const refreshTkn = await generateToken({ _id: user._id }, '1d');
     const refreshToken = new Token({ token: refreshTkn });
     await refreshToken.save();
-
+    // console.log({ user, token, refreshToken });
+    // console.log(user);
     if (!user) throw new Error();
 
     res.setHeader('authorization', token);

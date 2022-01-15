@@ -17,6 +17,7 @@ passport.use(
       // debug('passport local');
       // console.log('passport local');
       try {
+        // console.log('call b');
         const user = await User.findOne({ email });
         // console.log(user);
         if (!user) done(null, false, { title: 'error', message: 'invalid email or password' });
@@ -25,6 +26,7 @@ passport.use(
         if (!isVerified)
           done(null, false, { title: 'error', message: 'invalid email or password' });
 
+        // console.log(user);
         done(null, user);
       } catch (error) {
         done(error);
@@ -54,6 +56,7 @@ passport.use(
 );
 
 exports.isAuthenticated = async (req, res, next) => {
+  // console.log('call a');
   await passport.authenticate('local', { session: false }, (err, user, info) => {
     if (err) {
       return responseError(res, httpStatus.OK, 'error', err.message);

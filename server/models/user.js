@@ -109,6 +109,7 @@ userSchema.methods.generateToken = async function () {
   const payload = { _id: user._id, userType: user.userType };
   const token = await generateToken(payload, '15m');
   user.tokens.push(token);
+  // console.log(user);
   await user.save();
   // console.log({ user, token });
   return { user, token };

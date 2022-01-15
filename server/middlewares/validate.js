@@ -5,6 +5,7 @@ const { responseError } = require('../helpers/responseHelper');
 
 exports.validateUserSchema = async (req, res, next) => {
   try {
+    console.log(req.body);
     const isValidate = await userSchema.validate(req.body);
     if (isValidate.error) throw new Error(isValidate.error);
     req.body = isValidate.value;
