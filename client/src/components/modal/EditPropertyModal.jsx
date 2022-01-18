@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Modal } from '@mui/material';
-import PropertyForm from '../form/editPropertyForm';
+import PropertyForm from '../form/EditPropertyForm';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { handleOpen, handleClose } from '../../redux/slice/modal';

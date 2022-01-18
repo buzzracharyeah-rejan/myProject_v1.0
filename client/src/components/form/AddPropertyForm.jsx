@@ -10,36 +10,40 @@ import propertySchema from '../../schemas/propertySchema';
 
 import axiosInstance from '../../configs/axios';
 
-export default function PropertyForm() {
+export default function AddPropertyForm() {
   const dispatch = useDispatch();
-  const { properties } = useSelector((state) => state.property);
-  const { id } = useSelector((state) => state.modal);
+  //   const { properties } = useSelector((state) => state.property);
+  //   const { id } = useSelector((state) => state.modal);
 
   // console.log(properties, id);
 
-  const property = properties.find((property) => property._id === id);
+  //   const property = properties.find((property) => property._id === id);
   // console.log(property);
   const [status, setStatus] = useState({ done: false, error: false, message: '' });
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      ...property,
-      address: property.location.address,
+      propertyName: '',
+      propertyType: '',
+      address: '',
+      description: '',
+      valuation: '',
+      isSold: '',
     },
     validationSchema: propertySchema,
     onSubmit: async (values) => {
       // console.log(values);
       try {
-        const response = await axiosInstance.patch(`/api/property/${values._id}`, { ...values });
+        const response = await axiosInstance.post(`/api/property`, { ...values });
         if (response.data.title === 'error') {
           setStatus({ error: true, done: true, message: response.data.message });
           dispatch(handleClose({ error: true, message: response.data.message }));
         }
 
-        if (response.data.title === 'update property') {
+        if (response.data.title === 'add property') {
           setStatus({ error: false, done: true, message: response.data.message });
           dispatch(handleClose({ success: true, message: response.data.message }));
-          //   navigate('/dashboard');
+          navigate('/property');
         }
       } catch (error) {
         const { data } = error.response;
@@ -56,7 +60,7 @@ export default function PropertyForm() {
             {status.message}
           </div>
         )}
-        <h1 className='text-center'>Edit Property</h1>
+        <h1 className='text-center'>Add Property</h1>
         <form onSubmit={formik.handleSubmit}>
           <div className='form-group'>
             <label htmlFor='propertyName'>Property Name</label>
@@ -149,7 +153,7 @@ export default function PropertyForm() {
 
           <div className='text-center'>
             <button type='submit' className='btn btn-primary btn-md  mt-2'>
-              Edit Property
+              Add Property
             </button>
           </div>
         </form>

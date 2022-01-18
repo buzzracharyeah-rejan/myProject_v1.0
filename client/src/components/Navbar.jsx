@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import { AppBar, Toolbar, Typography, Link } from '@mui/material';
 import HomeIcon from '@mui/icons-material/House';
 
+// import { lodash as _ } from 'lodash';
 import { links } from '../constants/links';
 
 export default function Navbar() {
@@ -15,17 +16,33 @@ export default function Navbar() {
             Real Estate App
           </Typography>
           <NavList>
-            {links.map((link) => (
-              <Link
-                key={link}
-                href={link}
-                color='#fff'
-                underline='none'
-                sx={{ textTransform: 'capitalize' }}
-              >
-                {link}
-              </Link>
-            ))}
+            {links.map((link) => {
+              if (link.toLowerCase().trim().includes('add property')) {
+                return (
+                  <Link
+                    key={link}
+                    href={`/property/${link.split(' ').join('')}`}
+                    color='#fff'
+                    underline='none'
+                    sx={{ textTransform: 'capitalize' }}
+                  >
+                    {link}
+                  </Link>
+                );
+              }
+
+              return (
+                <Link
+                  key={link}
+                  href={link}
+                  color='#fff'
+                  underline='none'
+                  sx={{ textTransform: 'capitalize' }}
+                >
+                  {link}
+                </Link>
+              );
+            })}
           </NavList>
         </Toolbar>
       </AppBar>

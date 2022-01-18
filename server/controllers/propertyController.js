@@ -48,10 +48,18 @@ exports.createProperty = async (req, res, next) => {
 
 exports.getProperties = async (req, res, next) => {
   try {
-    const properties = await Property.find();
+    const pageOptions = {
+      limit: parseInt(req.query.limit) || 5,
+      skip: parseInt(req.query.page) > 0 ? parseInt(req.query.page - 1) : 0,
+    };
+    const properties = await Property.find()
+      .limit(pageOptions.limit)
+      .skip(pageOptions.limit * pageOptions.skip);
+
     if (!properties) throw new Error();
     return responseSuccess(res, httpStatus.OK, 'Get Property', 'List of properties', properties);
   } catch (error) {
+    console.log(error.stack);
     return responseError(res, httpStatus.BAD_REQUEST, 'get property', 'properties listing failed');
   }
 };
