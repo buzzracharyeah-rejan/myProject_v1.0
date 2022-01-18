@@ -5,6 +5,6 @@ import modalSlice from './slice/modal';
 export const store = configureStore({
   reducer: {
     property: propertySlice,
-    editModal: modalSlice,
+    modal: modalSlice,
   },
 });

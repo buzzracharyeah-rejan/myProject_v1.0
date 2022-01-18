@@ -1,12 +1,12 @@
 import React from 'react';
 import { Box, Modal } from '@mui/material';
-import PropertyForm from '../form/propertyForm';
+import PropertyForm from '../form/editPropertyForm';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { handleOpen, handleClose } from '../../redux/slice/modal';
 
 const EditModal = () => {
-  const { open } = useSelector((state) => state.editModal);
+  const { open } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
   const style = {
     position: 'absolute',

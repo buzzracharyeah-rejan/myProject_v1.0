@@ -5,13 +5,13 @@ const Schema = yup.object({
     .string()
     .trim()
     .min(3, 'must be at least 3 characters or more')
-    .max(15, 'must be at most 15 characters or less')
+    .max(30, 'must be at most 30 characters or less')
     .required('required'),
   address: yup
     .string()
     .trim()
     .min(3, 'must be at least 3 characters or more')
-    .max(15, 'must be at most 15 characters or less')
+    .max(30, 'must be at most 30 characters or less')
     .required('required'),
   description: yup
     .string()

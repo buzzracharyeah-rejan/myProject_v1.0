@@ -33,7 +33,13 @@ exports.createProperty = async (req, res, next) => {
     });
     await property.save();
 
-    return responseSuccess(res, httpStatus.CREATED, 'add property', 'new property created', property);
+    return responseSuccess(
+      res,
+      httpStatus.CREATED,
+      'add property',
+      'new property created',
+      property
+    );
   } catch (error) {
     console.error(error.stack);
     return responseError(res, httpStatus.BAD_REQUEST, 'add property', error.message);
@@ -105,6 +111,7 @@ exports.getProperty = async (req, res, next) => {
 // };
 
 exports.updateProperty = async (req, res, next) => {
+  console.log('update property');
   try {
     const userId = req.user._id;
     const propertyId = req.params.id;
@@ -131,9 +138,15 @@ exports.updateProperty = async (req, res, next) => {
     );
     if (!updatedProperty) throw new Error();
 
-    return responseSuccess(res, httpStatus.CREATED, 'update property', 'update property success', updatedProperty);
+    return responseSuccess(
+      res,
+      httpStatus.CREATED,
+      'update property',
+      'update property success',
+      updatedProperty
+    );
   } catch (error) {
-    return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'update property', 'update property failed');
+    return responseError(res, httpStatus.OK, 'update property', 'update property failed');
   }
 };
 
@@ -144,7 +157,13 @@ exports.deleteProperty = async (req, res, next) => {
 
     if (!property) throw new Error();
 
-    return responseSuccess(res, httpStatus.ACCEPTED, 'delete property', 'property deleted successful', property);
+    return responseSuccess(
+      res,
+      httpStatus.ACCEPTED,
+      'delete property',
+      'property deleted successful',
+      property
+    );
   } catch (error) {
     return responseError(res, httpStatus.BAD_REQUEST, 'error', 'delete property failed');
   }
@@ -156,7 +175,13 @@ exports.deleteAllProperties = async (req, res, next) => {
 
     if (!property) throw new Error();
 
-    return responseSuccess(res, httpStatus.OK, 'delete property', 'delete property success', property);
+    return responseSuccess(
+      res,
+      httpStatus.OK,
+      'delete property',
+      'delete property success',
+      property
+    );
   } catch (error) {
     return responseError(res, httpStatus.OK, 'delete property', 'delete property failed', property);
   }
@@ -179,7 +204,9 @@ exports.searchProperty = async (req, res, next) => {
     // console.log(longitude, latitude);
 
     const property = await Property.find({
-      'location.location_geoJSON': { $geoWithin: { $centerSphere: [[longitude, latitude], mile / 3963.2] } },
+      'location.location_geoJSON': {
+        $geoWithin: { $centerSphere: [[longitude, latitude], mile / 3963.2] },
+      },
       valuation: { $gt: valuation },
     });
     // console.log(property);
@@ -196,7 +223,13 @@ exports.searchProperty = async (req, res, next) => {
     // ]);
     if (!property) throw new Error();
 
-    return responseSuccess(res, httpStatus.OK, 'search location', 'search location success', property);
+    return responseSuccess(
+      res,
+      httpStatus.OK,
+      'search location',
+      'search location success',
+      property
+    );
   } catch (error) {
     // console.error(error.stack);
     return responseError(res, httpStatus.BAD_REQUEST, 'search location', 'search location failed');
@@ -227,7 +260,12 @@ exports.bookProperty = async (req, res, next) => {
     responseSuccess(res, httpStatus.ACCEPTED, 'book property', 'book property success', property);
   } catch (error) {
     console.error(error.stack);
-    return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'book property', 'book property failed');
+    return responseError(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'book property',
+      'book property failed'
+    );
   }
 };
 
@@ -242,11 +280,21 @@ exports.buyProperty = async (req, res, next) => {
     // console.log(property.valuation === price);
 
     if (price !== property.valuation) {
-      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'bid not successful', ' please match the valuation');
+      return responseError(
+        res,
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'bid not successful',
+        ' please match the valuation'
+      );
     }
 
     if (property.isSold) {
-      return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'buy property', 'property sold out');
+      return responseError(
+        res,
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'buy property',
+        'property sold out'
+      );
     }
 
     const updatedProperty = await Property.findByIdAndUpdate(
@@ -273,6 +321,11 @@ exports.buyProperty = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error.stack);
-    responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'buy property', 'property purchase failed');
+    responseError(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'buy property',
+      'property purchase failed'
+    );
   }
 };

@@ -8,13 +8,11 @@ import { store } from './redux/store';
 import './index.css';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <CssBaseline />
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <BrowserRouter>
+    <CssBaseline />
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </BrowserRouter>,
   document.getElementById('root')
 );

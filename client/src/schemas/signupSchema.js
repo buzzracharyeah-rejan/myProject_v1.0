@@ -33,7 +33,7 @@ const Schema = yup.object({
     // .min(7, 'must be at least 7 digits or more')
     // .max(14, 'must be at least 14 digits or less')
     .required('required'),
-  userType: yup.mixed().oneOf(['admin', 'buyer', 'seller']),
+  userType: yup.string().oneOf(['admin', 'buyer', 'seller']),
 });
 
 export default Schema;
