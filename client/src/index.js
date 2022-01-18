@@ -11,9 +11,9 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <CssBaseline />
-      <App />
-      {/* <Provider store={store}>
-      </Provider> */}
+      <Provider store={store}>
+        <App />
+      </Provider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

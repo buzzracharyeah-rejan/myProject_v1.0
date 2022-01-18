@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Navbar from './Navbar';
+import Navbar from '../Navbar';
 
 const PropertyDetail = () => {
   const property = {

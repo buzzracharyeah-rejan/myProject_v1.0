@@ -4,7 +4,7 @@ const Schema = yup.object({
   firstName: yup
     .string()
     .trim()
-    .min('3', 'must be at least 3 characters or more')
+    .min(3, 'must be at least 3 characters or more')
     .max(15, 'must be at least 15 characters or less')
     .required('required'),
   lastName: yup

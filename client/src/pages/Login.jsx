@@ -30,12 +30,14 @@ export default function Login() {
     onSubmit: async ({ email, password }) => {
       try {
         const response = await axiosInstance.post('/api/login', { email, password });
+
         if (response.data.title === 'error') {
           setUser({ login: false, error: true, message: response.data.message });
         } else {
-          console.log(response.data);
           setUser({ login: true, error: false, message: response.data.message });
-          localStorage.setItem('token', response.data.data.token);
+
+          // store access-tkn
+          localStorage.setItem('accessTkn', response.data.data.token);
           navigate('/');
         }
       } catch (error) {
