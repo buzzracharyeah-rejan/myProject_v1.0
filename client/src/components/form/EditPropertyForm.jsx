@@ -5,10 +5,12 @@ import styled from 'styled-components';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { handleClose } from '../../redux/slice/modal';
+import { listProperties } from '../../redux/slice/property';
 
 import propertySchema from '../../schemas/propertySchema';
 
 import axiosInstance from '../../configs/axios';
+import { utils } from '../../utils/fetch';
 
 export default function EditPropertyForm() {
   const dispatch = useDispatch();
@@ -28,18 +30,29 @@ export default function EditPropertyForm() {
     },
     validationSchema: propertySchema,
     onSubmit: async (values) => {
-      // console.log(values);
+      console.log(values);
+      const { booked_users, created_at, location, owner, __v, _id, ...others } = values;
       try {
-        const response = await axiosInstance.patch(`/api/property/${values._id}`, { ...values });
+        const response = await axiosInstance.patch(`/api/property/${values._id}`, {
+          ...others,
+        });
+        console.log(response.data);
         if (response.data.title === 'error') {
           setStatus({ error: true, done: true, message: response.data.message });
-          dispatch(handleClose({ error: true, message: response.data.message }));
+          dispatch(handleClose({ error: true, message: response.data.message, id: values._id }));
+        }
+
+        if (response.data.title === 'validation error') {
+          setStatus({ error: true, done: true, message: response.data.message });
+          dispatch(handleClose({ error: true, message: response.data.message, id: values._id }));
         }
 
         if (response.data.title === 'update property') {
+          // console.log(response.data);
           setStatus({ error: false, done: true, message: response.data.message });
-          dispatch(handleClose({ success: true, message: response.data.message }));
-          //   navigate('/dashboard');
+          dispatch(handleClose({ success: true, message: response.data.message, id: values._id }));
+          const properties = await utils.fetchData();
+          dispatch(listProperties(properties));
         }
       } catch (error) {
         const { data } = error.response;

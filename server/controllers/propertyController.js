@@ -154,6 +154,7 @@ exports.updateProperty = async (req, res, next) => {
       updatedProperty
     );
   } catch (error) {
+    console.log(error);
     return responseError(res, httpStatus.OK, 'update property', 'update property failed');
   }
 };

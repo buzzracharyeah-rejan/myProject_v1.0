@@ -46,7 +46,7 @@ const userSchema = new Schema(
       // select: false
     },
     contactNumber: {
-      type: Number,
+      type: String,
       required: false,
     },
     displayAddress: {

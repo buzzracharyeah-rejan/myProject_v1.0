@@ -29,9 +29,9 @@ const Schema = yup.object({
     .max(15, 'must be at least 15 characters or less')
     .required('required'),
   contactNumber: yup
-    .number()
-    // .min(7, 'must be at least 7 digits or more')
-    // .max(14, 'must be at least 14 digits or less')
+    .string()
+    .min(7, 'must be at least 7 digits or more')
+    .max(14, 'must be at least 14 digits or less')
     .required('required'),
   userType: yup.string().oneOf(['admin', 'buyer', 'seller']),
 });

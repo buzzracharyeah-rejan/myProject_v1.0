@@ -12,7 +12,7 @@ const userSchema = Joi.object({
     .lowercase()
     .required(),
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-  contactNumber: Joi.number().required(),
+  contactNumber: Joi.string().required(),
   displayAddress: Joi.string().alphanum().min(5).max(30).trim().lowercase().required(),
   userType: Joi.string().valid('admin', 'buyer', 'seller'),
 });

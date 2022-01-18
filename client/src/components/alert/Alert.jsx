@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Alert, AlertTitle } from '@mui/material';
 
+import { useSelector } from 'react-redux';
+
 const CustomAlert = ({ severity, title, message }) => {
+  const { id } = useSelector((state) => state.modal);
+  console.log(id);
   const [visible, setVisible] = useState(true);
   useEffect(() => {
     setTimeout(() => setVisible(false), 2000);
-  }, []);
+  }, [id]);
 
   return <Wrapper>{visible && <Alert severity={severity}>{message}</Alert>}</Wrapper>;
 };

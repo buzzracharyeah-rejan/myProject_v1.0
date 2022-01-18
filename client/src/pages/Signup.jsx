@@ -30,13 +30,17 @@ export default function Signup() {
           setUser({ error: true, message: response.data.message });
         }
 
+        if (response.data.title === 'validation error') {
+          setUser({ error: true, message: response.data.message });
+        }
+
         if (response.data.title === 'signup') {
           setUser({ error: false, signup: true, message: response.data.message });
           navigate('/login');
         }
         console.log(response);
       } catch (error) {
-        console.log(error);
+        setUser({ error: true, message: error.response.message });
       }
     },
   });
@@ -55,7 +59,7 @@ export default function Signup() {
         )}
         <h1 className='text-center'>Signup</h1>
         <form onSubmit={formik.handleSubmit}>
-          <div className='mt-2'>
+          <div className='form-group'>
             <label htmlFor='firstName'>First Name</label>
             <input
               type='text'
@@ -68,7 +72,7 @@ export default function Signup() {
             ) : null}
           </div>
 
-          <div className='mt-2'>
+          <div className='form-group'>
             <label htmlFor='lastName'>Last Name</label>
             <input
               type='text'
@@ -81,7 +85,7 @@ export default function Signup() {
             ) : null}
           </div>
 
-          <div className='mt-2'>
+          <div className='form-group'>
             <label htmlFor='email'>Email</label>
             <input
               type='email'
@@ -94,7 +98,7 @@ export default function Signup() {
             ) : null}
           </div>
 
-          <div className='mt-2'>
+          <div className='form-group'>
             <label htmlFor='password'>Password</label>
             <input
               type='password'
@@ -107,7 +111,7 @@ export default function Signup() {
             ) : null}
           </div>
 
-          <div className='mt-2'>
+          <div className='form-group'>
             <label htmlFor='displayAddress'>Display Address</label>
             <input
               type='text'
@@ -120,10 +124,10 @@ export default function Signup() {
             ) : null}
           </div>
 
-          <div className='mt-2'>
+          <div className='form-group'>
             <label htmlFor='contactNumber'>Contact Number</label>
             <input
-              type='number'
+              type='string'
               id='contactNumber'
               className='form-control'
               {...formik.getFieldProps('contactNumber')}
@@ -133,11 +137,11 @@ export default function Signup() {
             ) : null}
           </div>
 
-          <div className='mt-2'>
+          <div className='form-group'>
             <label htmlFor='userType'>User Type</label>
             <select
               id='userType'
-              // className='form-select'
+              className='form-select'
               name='userType'
               value={formik.values.userType}
               onChange={formik.handleChange}
@@ -153,7 +157,7 @@ export default function Signup() {
           </div>
 
           <div className='text-center'>
-            <button type='submit' className='btn btn-primary btn-md mt-3'>
+            <button type='submit' className='btn btn-primary btn-md form-group'>
               Signup
             </button>
           </div>

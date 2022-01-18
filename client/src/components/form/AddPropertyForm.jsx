@@ -32,10 +32,16 @@ export default function AddPropertyForm() {
     },
     validationSchema: propertySchema,
     onSubmit: async (values) => {
-      // console.log(values);
+      console.log(values);
       try {
         const response = await axiosInstance.post(`/api/property`, { ...values });
+        console.log(response.data);
         if (response.data.title === 'error') {
+          setStatus({ error: true, done: true, message: response.data.message });
+          dispatch(handleClose({ error: true, message: response.data.message }));
+        }
+
+        if (response.data.title === 'validation error') {
           setStatus({ error: true, done: true, message: response.data.message });
           dispatch(handleClose({ error: true, message: response.data.message }));
         }

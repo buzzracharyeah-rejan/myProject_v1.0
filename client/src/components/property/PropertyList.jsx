@@ -15,7 +15,7 @@ import { utils } from '../../utils/fetch';
 // console.log(fetchData);
 const PropertyList = () => {
   const { properties } = useSelector((state) => state.property);
-  // const { success, error, message } = useSelector((state) => state.modal);
+  const { success, error, message } = useSelector((state) => state.modal);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const { open } = useSelector((state) => state.modal);
@@ -28,10 +28,10 @@ const PropertyList = () => {
     });
   }, [loading, page]);
 
-  useEffect(() => {
-    console.log('use effect hook 2');
-  }, [properties]);
-  console.log(properties);
+  // useEffect(() => {
+  //   console.log('use effect hook 2');
+  // }, [properties]);
+  // console.log(properties);
 
   if (loading) {
     return <Loading />;
@@ -40,6 +40,8 @@ const PropertyList = () => {
       <div>
         <Navbar />
         <Wrapper>
+          {error && <CustomAlert severity='error' message={message} />}
+          {success && <CustomAlert severity='success' message={message} />}
           <Container sx={{ py: 8 }} maxWidth='md'>
             {open ? <EditProperty /> : null}
             <Grid container spacing={4}>
@@ -79,7 +81,7 @@ const Wrapper = styled('main')`
   padding: 3.5rem;
   margin: 1rem 0;
   height: 120vh;
-  overflow: hidden;
+  // overflow: hidden;
   // background-color: lime;
 `;
 
