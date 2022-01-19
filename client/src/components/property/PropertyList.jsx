@@ -17,16 +17,18 @@ const PropertyList = () => {
   const { properties } = useSelector((state) => state.property);
   const { success, error, message } = useSelector((state) => state.modal);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
+  const [pageFeatures, setPageFeatures] = useState({ page: 0, limit: 0 });
   const { open } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    utils.fetchData(page).then((response) => {
-      dispatch(listProperties(response));
-      setLoading(false);
-    });
-  }, [loading, page]);
+    utils
+      .fetchData(`/api/property?page=${pageFeatures.page}&limit=${pageFeatures.limit}`)
+      .then((response) => {
+        dispatch(listProperties(response));
+        setLoading(false);
+      });
+  }, [loading, pageFeatures.page]);
 
   // useEffect(() => {
   //   console.log('use effect hook 2');
@@ -64,7 +66,11 @@ const PropertyList = () => {
                 count={10}
                 color='primary'
                 size='medium'
-                onChange={(event) => setPage(event.target.innerText)}
+                onChange={(event) =>
+                  setPageFeatures((state) => {
+                    return { ...state, page: event.target.innerText };
+                  })
+                }
               />
             </PaginationWrapper>
           </Container>

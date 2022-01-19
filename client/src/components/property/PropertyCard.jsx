@@ -49,7 +49,7 @@ const PropertyCard = ({ id, propertyName, description, propertyType, location, v
             mr: '1.8rem',
             p: '1rem 1.25rem',
           }}
-          href={'/property/view/' + id}
+          href={'/property/' + id}
         >
           View
         </Link>

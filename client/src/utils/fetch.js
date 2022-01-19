@@ -1,10 +1,10 @@
 import axiosInstance from '../configs/axios';
 
 const utils = {
-  fetchData: async (page = 0, limit = 0) => {
+  fetchData: async (url) => {
     const {
       data: { data },
-    } = await axiosInstance.get(`/api/property?page=${page}&limit=${limit}`);
+    } = await axiosInstance.get(url);
     return data;
   },
 };

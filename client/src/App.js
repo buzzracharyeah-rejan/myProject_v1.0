@@ -14,7 +14,7 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/property' element={<PropertyList />} />
         <Route path='/property/addproperty' element={<AddPropertyForm />} />
-        <Route path='/property/view/:id' element={<PropertyDetail />} />
+        <Route path='/property/:id' element={<PropertyDetail />} />
         {/* <Route path='*' element={<Navigate to='/login' />} /> */}
       </Routes>
     </>
