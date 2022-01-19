@@ -7,12 +7,23 @@ import {
   Edit as EditIcon,
 } from '@mui/icons-material';
 
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { handleOpen } from '../../redux/slice/modal';
 import PopConfirm from '../button/PopConfirmDelete';
 
-const PropertyCard = ({ id, propertyName, description, propertyType, location, valuation }) => {
+const PropertyCard = ({
+  id,
+  propertyName,
+  description,
+  propertyType,
+  location,
+  valuation,
+  owner,
+  isSold,
+}) => {
+  const { id: userId } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardContent sx={{ flexGrow: 1 }}>
@@ -23,6 +34,10 @@ const PropertyCard = ({ id, propertyName, description, propertyType, location, v
             component='h2'
             sx={{
               textTransform: 'capitalize',
+              color: 'text.primary',
+              ':hover': {
+                color: '#1976d2',
+              },
             }}
           >
             {propertyName}
@@ -42,11 +57,28 @@ const PropertyCard = ({ id, propertyName, description, propertyType, location, v
             {location.address}
           </Typography>
         </Meta>
-        <Typography component='h6' variant='h7'>
-          $ {valuation}
-        </Typography>
+        <Meta>
+          <Typography component='h6' variant='h7'>
+            $ {valuation}
+          </Typography>
+          <Typography
+            component='h6'
+            variant='h7'
+            className={`badge badge-pill ${isSold ? 'bg-danger' : 'bg-success text-white'}`}
+            sx={{
+              transition: '1s ease-in-out',
+              fontSize: '1rem',
+              ':hover': {
+                transform: 'rotate(10deg) translate(2px, 5px) rotate(-8deg)',
+                cursor: 'pointer',
+              },
+            }}
+          >
+            {isSold ? 'Sold' : 'Available'}
+          </Typography>
+        </Meta>
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ display: `${userId !== owner && 'none'}` }}>
         <Button
           variant='text'
           onClick={() => dispatch(handleOpen({ id }))}
@@ -76,4 +108,8 @@ const Meta = styled('div')`
 const CustomLink = styled(Link)`
   text-decoration: none;
   color: #000;
+
+  Typography {
+    color: 'blue';
+  }
 `;

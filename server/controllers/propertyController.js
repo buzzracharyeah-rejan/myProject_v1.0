@@ -124,7 +124,7 @@ exports.updateProperty = async (req, res, next) => {
     const userId = req.user._id;
     const propertyId = req.params.id;
 
-    console.log({ userId, propertyId });
+    // console.log({ userId, propertyId });
 
     const { propertyName, propertyType, address, description, valuation, isSold } = req.body;
     // const property = await Property.findOne({ _id: propertyId, owner: userId });
@@ -161,8 +161,11 @@ exports.updateProperty = async (req, res, next) => {
 
 exports.deleteProperty = async (req, res, next) => {
   try {
-    const _id = req.params.id;
-    const property = await Property.findByIdAndDelete(_id);
+    // console.log(req.user);
+    const propertyId = req.params.id;
+    const userId = req.user._id;
+
+    const property = await Property.findOneAndDelete({ _id: propertyId, owner: userId });
 
     if (!property) throw new Error();
 

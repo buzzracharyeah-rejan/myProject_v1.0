@@ -59,7 +59,7 @@ export default function Login() {
             {user.message}
           </div>
         )}
-        <h1 className='text-center'>Login</h1>
+        <h1 className='text-center'>Log In</h1>
         <form onSubmit={formik.handleSubmit}>
           <div className='mt-2'>
             <label htmlFor='email'>Email</label>
@@ -88,9 +88,15 @@ export default function Login() {
           </div>
 
           <div className='text-center'>
-            <button type='submit' className='btn btn-primary btn-md mt-3'>
-              Login
+            <button type='submit' className='btn btn-primary btn-md mt-3 px-3'>
+              Log In
             </button>
+          </div>
+
+          <div className='text-center p-3 '>
+            <a className='text-dark' href='/signup'>
+              Don't have an account? Sign Up
+            </a>
           </div>
         </form>
       </Wrapper>

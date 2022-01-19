@@ -20,6 +20,16 @@ export default function EditPropertyForm() {
   const property = properties.find((property) => property._id === id);
   // console.log(property);
   // const [status, setStatus] = useState({ done: false, error: false, message: '' });
+  // const clearFlag = (payload) => {
+  //   setTimeout(() => {
+  //     dispatch(setDeleteFlag({ ...payload }));
+  //   }, 2000);
+
+  const clearFlag = function (payload) {
+    setTimeout(() => {
+      dispatch(setEditFlag({ ...payload }));
+    }, 2000);
+  };
   const formik = useFormik({
     initialValues: {
       ...property,
@@ -30,34 +40,41 @@ export default function EditPropertyForm() {
       const { booked_users, created_at, location, owner, __v, _id, ...others } = values;
 
       try {
-        // const response = await axiosInstance.patch(`/api/property/${values._id}`, {
-        //   ...others,
-        // });
-        // console.log(response.data);
         const response = await utils.updateData(`/api/property/${values._id}`, { ...others });
-        // console.log(response);
+        console.log(response);
         if (response.title === 'error') {
           dispatch(setEditFlag({ error: true, message: response.message }));
+          clearFlag({ error: false, message: '' });
           dispatch(handleClose());
         }
         if (response.title === 'validation error') {
           dispatch(setEditFlag({ error: true, message: response.message }));
+          clearFlag({ error: false, message: '' });
           dispatch(handleClose());
         }
+
+        if (response.message.includes('update property failed')) {
+          dispatch(setEditFlag({ error: true, message: response.message }));
+          clearFlag({ error: false, message: '' });
+          dispatch(handleClose());
+        }
+
         if (response.title === 'update property') {
-          console.log('here');
+          // console.log('here');
           const { data } = response;
           const propertyIndex = properties.findIndex((property) => property._id === data._id);
           const updatedProperties = [...properties];
           updatedProperties[propertyIndex] = { ...data };
 
           dispatch(setEditFlag({ edit: true, message: response.message }));
+          clearFlag({ error: false, message: '' });
           dispatch(handleClose());
           dispatch(setProperties(updatedProperties));
         }
       } catch (error) {
         const { data } = error.response;
         dispatch(setEditFlag({ error: true, done: true, message: data.message }));
+        clearFlag({ error: false, message: '' });
         dispatch(handleClose());
       }
     },

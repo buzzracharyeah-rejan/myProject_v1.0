@@ -57,7 +57,7 @@ export default function Signup() {
             {user.message}
           </div>
         )}
-        <h1 className='text-center'>Signup</h1>
+        <h1 className='text-center'>Sign Up</h1>
         <form onSubmit={formik.handleSubmit}>
           <div className='form-group'>
             <label htmlFor='firstName'>First Name</label>
@@ -156,12 +156,18 @@ export default function Signup() {
             ) : null}
           </div>
 
-          <div className='text-center'>
-            <button type='submit' className='btn btn-primary btn-md form-group'>
-              Signup
+          <div className='text-center p-3'>
+            <button type='submit' className='btn btn-success btn-md form-group px-4'>
+              Sign Up
             </button>
           </div>
         </form>
+
+        <div className='text-center p-3 '>
+          <a className='text-dark' href='/login'>
+            Already have an account? Sign In
+          </a>
+        </div>
       </Wrapper>
     </>
   );
@@ -171,8 +177,8 @@ const Wrapper = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 500px;
-  padding: 40px;
+  width: 40vw;
+  padding: 3rem;
   transform: translate(-50%, -50%);
   background: #fff;
   box-sizing: border-box;

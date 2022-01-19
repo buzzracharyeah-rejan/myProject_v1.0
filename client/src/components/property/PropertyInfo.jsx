@@ -15,6 +15,7 @@ export default function PropertyInfo({
   valuation,
   location,
   description,
+  isSold,
 }) {
   return (
     <Box
@@ -36,7 +37,7 @@ export default function PropertyInfo({
         <CustomTypography variant='h5' component='h1' gutterBottom>
           {propertyName}
         </CustomTypography>
-        <CustomTypography variant='body1' component='h2' gutterBottom>
+        <CustomTypography variant='body1' component='h2' color='text.primary' gutterBottom>
           Description
           <br />
           {description}
@@ -52,12 +53,25 @@ export default function PropertyInfo({
           </CustomTypography>
           <CustomTypography
             variant='body1'
-            className={`badge ${propertyType === 'sale' ? 'bg-success' : 'bg-warning text-dark'}`}
+            className={`badge ${isSold ? 'bg-danger' : 'bg-success text-white'}`}
+            sx={{
+              transition: '1s ease-in-out',
+              ':hover': {
+                transform: 'rotate(10deg) translate(2px, 5px) rotate(-8deg) scale(1.25)',
+                cursor: 'pointer',
+              },
+            }}
           >
-            <HomeIcon sx={{ p: '1px', mr: '3px' }} />
-            {propertyType}
+            {isSold ? 'Sold Out' : 'Avaliable'}
           </CustomTypography>
         </Meta>
+        <CustomTypography
+          variant='body1'
+          className={`badge ${propertyType === 'sale' ? 'bg-success' : 'bg-warning text-dark'}`}
+        >
+          <HomeIcon sx={{ p: '1px', mr: '3px' }} />
+          {propertyType}
+        </CustomTypography>
       </Container>
     </Box>
   );
@@ -67,9 +81,10 @@ const Meta = styled('div')`
   display: flex;
   flex-direction: flex-start;
   align-items: center;
-  gap: 1rem;
+  gap: 3rem;
 `;
 
 const CustomTypography = styled(Typography)`
   text-transform: capitalize;
+  margin: 2px;
 `;

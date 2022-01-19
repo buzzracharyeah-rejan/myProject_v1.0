@@ -31,7 +31,7 @@ const PopConfirm = ({ id }) => {
 
   function cancel(e) {
     // console.log(e);
-    message.error('Click on No');
+    // message.error('Click on No');
   }
 
   return (

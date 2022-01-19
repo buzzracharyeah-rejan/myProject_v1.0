@@ -18,14 +18,15 @@ export default Footer;
 const Wrapper = styled('footer')`
   height: 8rem;
   width: 65vw;
+  margin-top: 20rem;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   // background-color: lime;
-  padding: 1rem; 1.25rem;
+  padding: 1rem 1.25rem;
   border: 1px solid #fff;
   border-radius: 1px;
   // background-color: yellow;
-  overflow: hidden;
+  // overflow: hidden;
 `;

@@ -16,7 +16,7 @@ export const propertySlice = createSlice({
       state.properties = actions.payload;
     },
     setEditFlag: (state, { payload: { edit, error, message } }) => {
-      console.log({ edit, error, message });
+      // console.log({ edit, error, message });
       state.edit = edit;
       state.error = error;
       state.message = message;

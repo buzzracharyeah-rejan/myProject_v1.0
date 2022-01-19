@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Container, Typography, Grid } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { setProperties } from '../redux/slice/property';
+import { Alert } from 'antd';
 
 import PropertyCard from './property/PropertyCard';
 import Loading from './Loading';
@@ -11,7 +12,7 @@ import EditPropertyModal from '../components/modal/EditPropertyModal';
 export default function Hero() {
   const dispatch = useDispatch();
   const { firstName, lastName } = useSelector((state) => state.user);
-  const { properties } = useSelector((state) => state.property);
+  const { properties, edit, del, error, message } = useSelector((state) => state.property);
   const { open } = useSelector((state) => state.modal);
   const [loading, setLoading] = useState(true);
 
@@ -24,10 +25,20 @@ export default function Hero() {
   }, [loading]);
   return (
     <Wrapper>
-      {open ? <EditPropertyModal /> : null}
       <Box component='div' maxWidth='sm' sx={{ margin: '0 auto' }}>
-        <Typography component='h1' variant='h3' align='center' color='text.secondary' gutterBottom>
-          Greetings {`${firstName} ${lastName}`}
+        {open ? <EditPropertyModal /> : null}
+        {edit && <Alert message={message} type='success' showIcon />}
+        {del && <Alert message={message} type='success' showIcon />}
+        {error && <Alert message={message} type='error' showIcon />}
+        <Typography
+          component='h1'
+          variant='h4'
+          align='center'
+          color='text.secondary'
+          gutterBottom
+          sx={{ textTransform: 'capitalize' }}
+        >
+          Greetings <br /> {`${firstName} ${lastName}`}
         </Typography>
         <Typography component='p' variant='body' align='center' gutterBottom>
           Welcome to the marketplace. You get the best deals here. <br /> Bringing you closer to
@@ -61,4 +72,5 @@ const Wrapper = styled('section')`
   width: 100vw;
   text-align: center;
   padding: 8rem 3rem;
+  margin-bottom: 3rem;
 `;
