@@ -4,8 +4,9 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     userType: '',
-    firstName: '',
-    lastName: '',
+    firstName: 'test',
+    lastName: 'bajracharya',
+    id: '',
   },
   reducers: {
     setUser: (state, { payload }) => {

@@ -17,6 +17,16 @@ router
   .patch(isSeller, validatePropertySchema, propertyController.updateProperty)
   .delete(isSeller, propertyController.deleteProperty);
 
+router.get(
+  '/api/trending',
+  isBuyer,
+  (req, res, next) => {
+    req.query.valuation = 10000;
+    next();
+  },
+  propertyController.hotProperties
+);
+
 router.get('/api/searchProperty', isBuyer, propertyController.searchProperty);
 
 router.get('/api/bookProperty/:id', isBuyer, propertyController.bookProperty);

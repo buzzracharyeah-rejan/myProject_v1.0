@@ -338,3 +338,34 @@ exports.buyProperty = async (req, res, next) => {
     );
   }
 };
+
+exports.hotProperties = async (req, res, next) => {
+  const { valuation } = req.query;
+  try {
+    const pageOptions = {
+      limit: parseInt(req.query.limit) || 5,
+      skip: parseInt(req.query.page) > 0 ? parseInt(req.query.page - 1) : 0,
+    };
+    const properties = await Property.find({ valuation: { $gt: valuation } })
+      .limit(pageOptions.limit)
+      .skip(pageOptions.limit * pageOptions.skip)
+      .sort({ valuation: -1 });
+
+    if (!properties) throw new Error();
+    return responseSuccess(
+      res,
+      httpStatus.OK,
+      'get trending properties',
+      'list of trending properties',
+      properties
+    );
+  } catch (error) {
+    console.log(error.stack);
+    return responseError(
+      res,
+      httpStatus.BAD_REQUEST,
+      'get trending property',
+      'properties listing failed'
+    );
+  }
+};

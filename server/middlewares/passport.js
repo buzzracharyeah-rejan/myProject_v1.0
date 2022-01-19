@@ -141,15 +141,15 @@ exports.isBuyer = async (req, res, next) => {
     // console.log(user.userType !== roles.BUYER);
 
     //buyer seller admin
-
-    if (user.userType !== roles.BUYER) {
-      if (user.userType === roles.SELLER || user.userType === roles.ADMIN) {
-        req.user = user;
-        return next();
-      }
+    if (
+      !(
+        user.userType === roles.BUYER ||
+        user.userType === roles.SELLER ||
+        user.userType === roles.ADMIN
+      )
+    ) {
       return responseError(res, httpStatus.UNAUTHORIZED, 'error', 'unauthorized access');
     }
-
     req.user = user;
     next();
   })(req, res, next);
