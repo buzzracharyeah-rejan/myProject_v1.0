@@ -19,7 +19,7 @@ export default function EditPropertyForm() {
 
   const property = properties.find((property) => property._id === id);
   // console.log(property);
-  const [status, setStatus] = useState({ done: false, error: false, message: '' });
+  // const [status, setStatus] = useState({ done: false, error: false, message: '' });
   const formik = useFormik({
     initialValues: {
       ...property,
@@ -28,6 +28,7 @@ export default function EditPropertyForm() {
     validationSchema: propertySchema,
     onSubmit: async (values) => {
       const { booked_users, created_at, location, owner, __v, _id, ...others } = values;
+
       try {
         // const response = await axiosInstance.patch(`/api/property/${values._id}`, {
         //   ...others,
@@ -36,11 +37,11 @@ export default function EditPropertyForm() {
         const response = await utils.updateData(`/api/property/${values._id}`, { ...others });
         // console.log(response);
         if (response.title === 'error') {
-          setEditFlag({ error: true, message: response.message });
+          dispatch(setEditFlag({ error: true, message: response.message }));
           dispatch(handleClose());
         }
         if (response.title === 'validation error') {
-          setEditFlag({ error: true, message: response.message });
+          dispatch(setEditFlag({ error: true, message: response.message }));
           dispatch(handleClose());
         }
         if (response.title === 'update property') {
@@ -50,13 +51,13 @@ export default function EditPropertyForm() {
           const updatedProperties = [...properties];
           updatedProperties[propertyIndex] = { ...data };
 
-          setEditFlag({ edit: true, message: response.message });
+          dispatch(setEditFlag({ edit: true, message: response.message }));
           dispatch(handleClose());
           dispatch(setProperties(updatedProperties));
         }
       } catch (error) {
         const { data } = error.response;
-        setStatus({ error: true, done: true, message: data.message });
+        dispatch(setEditFlag({ error: true, done: true, message: data.message }));
         dispatch(handleClose());
       }
     },
@@ -64,11 +65,11 @@ export default function EditPropertyForm() {
   return (
     <>
       <Wrapper>
-        {status.error && (
+        {/* {status.error && (
           <div className='alert alert-danger' role='alert'>
             {status.message}
           </div>
-        )}
+        )} */}
         <h1 className='text-center'>Edit Property</h1>
         <form onSubmit={formik.handleSubmit}>
           <div className='form-group'>

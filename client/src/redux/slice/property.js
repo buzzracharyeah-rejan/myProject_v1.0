@@ -15,11 +15,18 @@ export const propertySlice = createSlice({
     setProperties: (state, actions) => {
       state.properties = actions.payload;
     },
-    setEditFlag: (state, { payload }) => {
-      state = { ...state, ...payload };
+    setEditFlag: (state, { payload: { edit, error, message } }) => {
+      console.log({ edit, error, message });
+      state.edit = edit;
+      state.error = error;
+      state.message = message;
+      // state = { ...state, ...payload };
     },
-    setDeleteFlag: (state, { payload }) => {
-      state = { ...state, ...payload };
+    setDeleteFlag: (state, { payload: { del, error, message } }) => {
+      state.del = del;
+      state.error = error;
+      state.message = message;
+      // state = { ...state, ...payload };
     },
   },
 });

@@ -26,3 +26,4 @@ export default App;
 
 //TODO: fix navbar issue
 //Todo: fix routes issue. /property/property useNavigate didn't push to a new url, but an existing url
+// todo: update state using spread operation in propertySlice

@@ -7,7 +7,11 @@ const PopConfirm = ({ id }) => {
   const { properties } = useSelector((state) => state.property);
   const dispatch = useDispatch();
   async function confirm(e) {
-    console.log(id);
+    const clearFlag = (payload) => {
+      setTimeout(() => {
+        dispatch(setDeleteFlag({ ...payload }));
+      }, 2000);
+    };
     try {
       const response = await utils.deleteData(`/api/property/${id}`);
 
@@ -15,14 +19,13 @@ const PopConfirm = ({ id }) => {
         const updatedProperties = properties.filter((property) => property._id !== id);
         dispatch(setDeleteFlag({ del: true, message: response.data.message }));
         dispatch(setProperties(updatedProperties));
+        clearFlag({ del: false, message: '' });
       }
       message.success('property deleted successfully');
     } catch ({ response: { data } }) {
       dispatch(setDeleteFlag({ error: true, message: data.message }));
-      //   setTimeout(() => {
-      //     dispatch(setDeleteFlag({ error: false, message: '' }));
-      //   }, 3000);
-      console.log(data);
+      clearFlag({ error: false, message: '' });
+      // console.log(data);
     }
   }
 

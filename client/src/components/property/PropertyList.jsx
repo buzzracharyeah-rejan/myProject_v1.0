@@ -16,7 +16,6 @@ import { utils } from '../../utils/fetch';
 const PropertyList = () => {
   const { properties, edit, del, error, message } = useSelector((state) => state.property);
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false);
   const [pageFeatures, setPageFeatures] = useState({ page: 0, limit: 0 });
   const { open } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
@@ -30,16 +29,7 @@ const PropertyList = () => {
       });
   }, [dispatch, loading, pageFeatures]);
 
-  useEffect(() => {
-    if (message) {
-      setVisible(true);
-    }
-  }, [message]);
-  // useEffect(() => {
-  //   console.log('use effect hook 2');
-  // }, [properties]);
-  // console.log(properties);
-
+  // console.log({ edit, del, error, message });
   if (loading) {
     return <Loading />;
   } else {
@@ -48,9 +38,9 @@ const PropertyList = () => {
         <Navbar />
         <Wrapper>
           <Container sx={{ py: 8 }} maxWidth='md'>
-            {visible && edit && <Alert message={message} type='success' showIcon />}
-            {visible && del && <Alert message={message} type='success' showIcon />}
-            {visible && error && <Alert message={message} type='error' showIcon />}
+            {edit && <Alert message={message} type='success' showIcon />}
+            {del && <Alert message={message} type='success' showIcon />}
+            {error && <Alert message={message} type='error' showIcon />}
             {open ? <EditProperty /> : null}
             <Grid container spacing={4}>
               {properties.length > 0 ? (

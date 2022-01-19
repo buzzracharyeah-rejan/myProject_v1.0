@@ -21,8 +21,7 @@ export default function Hero() {
       .then((response) => dispatch(setProperties(response.splice(0, 3))));
     console.log(properties);
     setLoading(false);
-  }, []);
-
+  }, [loading]);
   return (
     <Wrapper>
       {open ? <EditPropertyModal /> : null}
@@ -31,8 +30,8 @@ export default function Hero() {
           Greetings {`${firstName} ${lastName}`}
         </Typography>
         <Typography component='p' variant='body' align='center' gutterBottom>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. At esse numquam autem sunt hic
-          alias nihil distinctio culpa nobis. Doloremque.
+          Welcome to the marketplace. You get the best deals here. <br /> Bringing you closer to
+          yours truly dream home
         </Typography>
       </Box>
       <Container sx={{ p: 6, mt: 4 }} maxWidth='md'>

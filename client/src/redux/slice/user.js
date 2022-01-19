@@ -4,15 +4,17 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     userType: '',
-    firstName: 'test',
-    lastName: 'bajracharya',
+    firstName: '',
+    lastName: '',
     id: '',
   },
   reducers: {
-    setUser: (state, { payload }) => {
-      //   console.log('set user');
-      //   console.log(payload);
-      state = { ...payload };
+    setUser: (state, { payload: { id, userType, firstName, lastName } }) => {
+      state.id = id;
+      state.userType = userType;
+      state.firstName = firstName;
+      state.lastName = lastName;
+      // state = { ...state, ...payload };
     },
   },
 });

@@ -1,20 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
-import {
-  AppBar,
-  Toolbar,
-  Link,
-  Menu,
-  MenuItem,
-  Switch,
-  FormGroup,
-  FormControlLabel,
-} from '@mui/material';
-import HomeIcon from '@mui/icons-material/House';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import { AppBar, Toolbar, Link, Menu, MenuItem, IconButton } from '@mui/material';
+
+import { Menu as MenuIcon, House as HomeIcon, AccountCircle } from '@mui/icons-material';
 import AddPropertyBtn from '../components/button/AddProperty';
-import IconButton from '@mui/material/IconButton';
 import { links } from '../constants/links';
 import { utils } from '../utils/fetch';
 
@@ -49,10 +38,6 @@ export default function Navbar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
-
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -66,15 +51,8 @@ export default function Navbar() {
     navigate('/login');
   };
 
-  // console.log(`hideBtn ${hideBtn}`);
   return (
     <>
-      <FormGroup>
-        <FormControlLabel
-          control={<Switch checked={auth} onChange={handleChange} aria-label='login switch' />}
-          label={auth ? 'Logout' : 'Login'}
-        />
-      </FormGroup>
       <AppBar sx={{ display: `${hide && 'none'}` }}>
         <Toolbar>
           <HomeIcon />
