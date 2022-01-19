@@ -174,6 +174,7 @@ exports.deleteProperty = async (req, res, next) => {
       property
     );
   } catch (error) {
+    console.log(error);
     return responseError(res, httpStatus.BAD_REQUEST, 'error', 'delete property failed');
   }
 };

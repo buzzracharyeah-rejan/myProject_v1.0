@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Container, Typography, Grid } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { listProperties } from '../redux/slice/property';
+import { setProperties } from '../redux/slice/property';
 
 import PropertyCard from './property/PropertyCard';
 import Loading from './Loading';
@@ -18,7 +18,7 @@ export default function Hero() {
   useEffect(() => {
     utils
       .fetchData(`/api/trending`)
-      .then((response) => dispatch(listProperties(response.splice(0, 3))));
+      .then((response) => dispatch(setProperties(response.splice(0, 3))));
     console.log(properties);
     setLoading(false);
   }, []);

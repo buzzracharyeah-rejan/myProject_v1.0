@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { handleClose } from '../../redux/slice/modal';
-import { listProperties } from '../../redux/slice/property';
+import { setProperties, setEditFlag } from '../../redux/slice/property';
 
 import propertySchema from '../../schemas/propertySchema';
 
-import axiosInstance from '../../configs/axios';
 import { utils } from '../../utils/fetch';
 
 export default function EditPropertyForm() {
@@ -17,12 +15,11 @@ export default function EditPropertyForm() {
   const { properties } = useSelector((state) => state.property);
   const { id } = useSelector((state) => state.modal);
 
-  console.log(properties, id);
+  // console.log(properties, id);
 
   const property = properties.find((property) => property._id === id);
   // console.log(property);
   const [status, setStatus] = useState({ done: false, error: false, message: '' });
-  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       ...property,
@@ -30,40 +27,37 @@ export default function EditPropertyForm() {
     },
     validationSchema: propertySchema,
     onSubmit: async (values) => {
-      // console.log(values);
       const { booked_users, created_at, location, owner, __v, _id, ...others } = values;
       try {
-        const response = await axiosInstance.patch(`/api/property/${values._id}`, {
-          ...others,
-        });
+        // const response = await axiosInstance.patch(`/api/property/${values._id}`, {
+        //   ...others,
+        // });
         // console.log(response.data);
-        if (response.data.title === 'error') {
-          setStatus({ error: true, done: true, message: response.data.message });
-          dispatch(handleClose({ error: true, message: response.data.message, id: values._id }));
+        const response = await utils.updateData(`/api/property/${values._id}`, { ...others });
+        // console.log(response);
+        if (response.title === 'error') {
+          setEditFlag({ error: true, message: response.message });
+          dispatch(handleClose());
         }
-        if (response.data.title === 'validation error') {
-          setStatus({ error: true, done: true, message: response.data.message });
-          dispatch(handleClose({ error: true, message: response.data.message, id: values._id }));
+        if (response.title === 'validation error') {
+          setEditFlag({ error: true, message: response.message });
+          dispatch(handleClose());
         }
-        if (response.data.title === 'update property') {
-          console.log(response.data);
-
-          const { data } = response.data;
+        if (response.title === 'update property') {
+          console.log('here');
+          const { data } = response;
           const propertyIndex = properties.findIndex((property) => property._id === data._id);
-          console.log(propertyIndex);
           const updatedProperties = [...properties];
           updatedProperties[propertyIndex] = { ...data };
-          console.log(`updated properties: ${updatedProperties}`);
 
-          setStatus({ error: false, done: true, message: response.data.message });
-          dispatch(handleClose({ success: true, message: response.data.message, id: values._id }));
-          // const properties = await utils.fetchData();
-          dispatch(listProperties(updatedProperties));
+          setEditFlag({ edit: true, message: response.message });
+          dispatch(handleClose());
+          dispatch(setProperties(updatedProperties));
         }
       } catch (error) {
         const { data } = error.response;
         setStatus({ error: true, done: true, message: data.message });
-        dispatch(handleClose({ error: true, message: data.message }));
+        dispatch(handleClose());
       }
     },
   });

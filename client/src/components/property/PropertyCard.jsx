@@ -9,6 +9,7 @@ import {
 
 import { useDispatch } from 'react-redux';
 import { handleOpen } from '../../redux/slice/modal';
+import PopConfirm from '../button/PopConfirmDelete';
 
 const PropertyCard = ({ id, propertyName, description, propertyType, location, valuation }) => {
   const dispatch = useDispatch();
@@ -53,13 +54,8 @@ const PropertyCard = ({ id, propertyName, description, propertyType, location, v
         >
           Edit
         </Button>
-        <Button
-          variant='text'
-          color='error'
-          onClick={() => dispatch(handleOpen({ id }))}
-          startIcon={<DeleteIcon />}
-        >
-          Delete
+        <Button variant='text' color='error' startIcon={<DeleteIcon />}>
+          <PopConfirm id={id} />
         </Button>
       </CardActions>
     </Card>

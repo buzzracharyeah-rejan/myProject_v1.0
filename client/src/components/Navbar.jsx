@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
-import { AppBar, Toolbar, Link } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Link,
+  Menu,
+  MenuItem,
+  Switch,
+  FormGroup,
+  FormControlLabel,
+} from '@mui/material';
 import HomeIcon from '@mui/icons-material/House';
-
+import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import AddPropertyBtn from '../components/button/AddProperty';
-
+import IconButton from '@mui/material/IconButton';
 import { links } from '../constants/links';
 import { utils } from '../utils/fetch';
 
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/slice/user';
+import { useNavigate } from 'react-router';
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const [hide, setHide] = useState(false);
   const [hideBtn, setHideBtn] = useState(false);
   const dispatch = useDispatch();
@@ -34,9 +46,35 @@ export default function Navbar() {
     });
   }, [dispatch, hideBtn]);
 
-  console.log(`hideBtn ${hideBtn}`);
+  const [auth, setAuth] = React.useState(true);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleChange = (event) => {
+    setAuth(event.target.checked);
+  };
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const logout = () => {
+    localStorage.setItem('accessTkn', null);
+    navigate('/login');
+  };
+
+  // console.log(`hideBtn ${hideBtn}`);
   return (
     <>
+      <FormGroup>
+        <FormControlLabel
+          control={<Switch checked={auth} onChange={handleChange} aria-label='login switch' />}
+          label={auth ? 'Logout' : 'Login'}
+        />
+      </FormGroup>
       <AppBar sx={{ display: `${hide && 'none'}` }}>
         <Toolbar>
           <HomeIcon />
@@ -80,6 +118,39 @@ export default function Navbar() {
             })}
             <AddPropertyBtn label='add property' to='/property/addProperty' hide={hideBtn} />
           </NavList>
+          {auth && (
+            <div>
+              <IconButton
+                size='large'
+                aria-label='account of current user'
+                aria-controls='menu-appbar'
+                aria-haspopup='true'
+                onClick={handleMenu}
+                color='inherit'
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id='menu-appbar'
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={logout}>Logout</MenuItem>
+              </Menu>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     </>

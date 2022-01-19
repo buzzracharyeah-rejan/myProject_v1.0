@@ -6,6 +6,7 @@ import { CssBaseline } from '@mui/material';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import './index.css';
+import 'antd/dist/antd.css';
 
 ReactDOM.render(
   <BrowserRouter>

@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, Grid, Pagination, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { Alert } from 'antd';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { listProperties } from '../../redux/slice/property';
+import { setProperties } from '../../redux/slice/property';
 
 import Loading from '../Loading';
 import Navbar from '../Navbar';
 import EditProperty from '../modal/EditPropertyModal';
 import PropertyCard from './PropertyCard';
-import CustomAlert from '../alert/Alert';
 
 import { utils } from '../../utils/fetch';
 // console.log(fetchData);
 const PropertyList = () => {
-  const { properties } = useSelector((state) => state.property);
-  const { success, error, message } = useSelector((state) => state.modal);
+  const { properties, edit, del, error, message } = useSelector((state) => state.property);
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [pageFeatures, setPageFeatures] = useState({ page: 0, limit: 0 });
   const { open } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
@@ -25,11 +25,16 @@ const PropertyList = () => {
     utils
       .fetchData(`/api/property?page=${pageFeatures.page}&limit=${pageFeatures.limit}`)
       .then((response) => {
-        dispatch(listProperties(response));
+        dispatch(setProperties(response));
         setLoading(false);
       });
-  }, [loading, pageFeatures.page]);
+  }, [dispatch, loading, pageFeatures]);
 
+  useEffect(() => {
+    if (message) {
+      setVisible(true);
+    }
+  }, [message]);
   // useEffect(() => {
   //   console.log('use effect hook 2');
   // }, [properties]);
@@ -42,9 +47,10 @@ const PropertyList = () => {
       <div>
         <Navbar />
         <Wrapper>
-          {error && <CustomAlert severity='error' message={message} />}
-          {success && <CustomAlert severity='success' message={message} />}
           <Container sx={{ py: 8 }} maxWidth='md'>
+            {visible && edit && <Alert message={message} type='success' showIcon />}
+            {visible && del && <Alert message={message} type='success' showIcon />}
+            {visible && error && <Alert message={message} type='error' showIcon />}
             {open ? <EditProperty /> : null}
             <Grid container spacing={4}>
               {properties.length > 0 ? (
@@ -85,7 +91,6 @@ export default PropertyList;
 const Wrapper = styled('main')`
   position: relative;
   padding: 3.5rem;
-  margin: 1rem 0;
   height: 120vh;
   // overflow: hidden;
   // background-color: lime;
