@@ -17,7 +17,7 @@ export default function EditPropertyForm() {
   const { properties } = useSelector((state) => state.property);
   const { id } = useSelector((state) => state.modal);
 
-  // console.log(properties, id);
+  console.log(properties, id);
 
   const property = properties.find((property) => property._id === id);
   // console.log(property);
@@ -30,29 +30,35 @@ export default function EditPropertyForm() {
     },
     validationSchema: propertySchema,
     onSubmit: async (values) => {
-      console.log(values);
+      // console.log(values);
       const { booked_users, created_at, location, owner, __v, _id, ...others } = values;
       try {
         const response = await axiosInstance.patch(`/api/property/${values._id}`, {
           ...others,
         });
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data.title === 'error') {
           setStatus({ error: true, done: true, message: response.data.message });
           dispatch(handleClose({ error: true, message: response.data.message, id: values._id }));
         }
-
         if (response.data.title === 'validation error') {
           setStatus({ error: true, done: true, message: response.data.message });
           dispatch(handleClose({ error: true, message: response.data.message, id: values._id }));
         }
-
         if (response.data.title === 'update property') {
-          // console.log(response.data);
+          console.log(response.data);
+
+          const { data } = response.data;
+          const propertyIndex = properties.findIndex((property) => property._id === data._id);
+          console.log(propertyIndex);
+          const updatedProperties = [...properties];
+          updatedProperties[propertyIndex] = { ...data };
+          console.log(`updated properties: ${updatedProperties}`);
+
           setStatus({ error: false, done: true, message: response.data.message });
           dispatch(handleClose({ success: true, message: response.data.message, id: values._id }));
-          const properties = await utils.fetchData();
-          dispatch(listProperties(properties));
+          // const properties = await utils.fetchData();
+          dispatch(listProperties(updatedProperties));
         }
       } catch (error) {
         const { data } = error.response;

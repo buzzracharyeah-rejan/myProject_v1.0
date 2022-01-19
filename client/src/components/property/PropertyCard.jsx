@@ -1,7 +1,11 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Card, CardContent, CardActions, Typography, Button, Link } from '@mui/material';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import {
+  LocationOn as LocationOnIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+} from '@mui/icons-material';
 
 import { useDispatch } from 'react-redux';
 import { handleOpen } from '../../redux/slice/modal';
@@ -11,16 +15,18 @@ const PropertyCard = ({ id, propertyName, description, propertyType, location, v
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography
-          gutterBottom
-          variant='h5'
-          component='h2'
-          sx={{
-            textTransform: 'capitalize',
-          }}
-        >
-          {propertyName}
-        </Typography>
+        <CustomLink href={`/property/${id}`}>
+          <Typography
+            gutterBottom
+            variant='h5'
+            component='h2'
+            sx={{
+              textTransform: 'capitalize',
+            }}
+          >
+            {propertyName}
+          </Typography>
+        </CustomLink>
         <Typography>{description}</Typography>
         <Meta>
           <Typography
@@ -40,22 +46,20 @@ const PropertyCard = ({ id, propertyName, description, propertyType, location, v
         </Typography>
       </CardContent>
       <CardActions>
-        <Link
-          component='a'
-          variant='body2'
-          underline='none'
-          sx={{
-            fontSize: '1rem',
-            mr: '1.8rem',
-            p: '1rem 1.25rem',
-          }}
-          href={'/property/' + id}
+        <Button
+          variant='text'
+          onClick={() => dispatch(handleOpen({ id }))}
+          startIcon={<EditIcon />}
         >
-          View
-        </Link>
-
-        <Button variant='text' onClick={() => dispatch(handleOpen({ id }))}>
           Edit
+        </Button>
+        <Button
+          variant='text'
+          color='error'
+          onClick={() => dispatch(handleOpen({ id }))}
+          startIcon={<DeleteIcon />}
+        >
+          Delete
         </Button>
       </CardActions>
     </Card>
@@ -71,4 +75,9 @@ const Meta = styled('div')`
   align-items: center;
   text-transform: capitalize;
   padding: 1rem 0;
+`;
+
+const CustomLink = styled(Link)`
+  text-decoration: none;
+  color: #000;
 `;
