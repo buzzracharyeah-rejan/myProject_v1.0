@@ -1,1 +1,1 @@
-exports.links = ['property', 'blogs', 'add property'];
+exports.links = ['property', 'blogs'];

@@ -10,14 +10,16 @@ import PropertyInfo from './PropertyInfo';
 import { utils } from '../../utils/fetch';
 const PropertyDetail = () => {
   const [property, setProperty] = useState({});
-  const [ownerDetails, setOwnerDetails] = useState({});
+  // const [ownerDetails, setOwnerDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
 
   useEffect(() => {
     console.log('use effect');
-    utils.fetchData(`/api/property/${id}`).then((property) => property[0]);
-    setLoading(false);
+    utils.fetchData(`/api/property/${id}`).then((property) => {
+      setProperty(property[0]);
+      setLoading(false);
+    });
   }, []);
 
   console.log(property);
@@ -32,11 +34,13 @@ const PropertyDetail = () => {
           <Grid container spacing={2}>
             <Grid item md={12} lg={8}>
               <Grid container gap={2}>
-                <Grid item>{/* <PropertyInfo {...property} /> */}</Grid>
+                <Grid item>
+                  <PropertyInfo {...property} />
+                </Grid>
               </Grid>
             </Grid>
             <Grid item md={12} lg={4} sx={{ marginTop: '10rem' }}>
-              <UserCard />
+              <UserCard {...property.owner_details[0]} />
               <Box
                 sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: '2rem' }}
               >

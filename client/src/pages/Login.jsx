@@ -38,7 +38,7 @@ export default function Login() {
 
           // store access-tkn
           localStorage.setItem('accessTkn', response.data.data.token);
-          navigate('/');
+          navigate('/dashboard');
         }
       } catch (error) {
         console.log(error.message);

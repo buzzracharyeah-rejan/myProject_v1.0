@@ -33,31 +33,30 @@ export default function PropertyInfo({
             className='img-fluid'
           />
         </Box>
-        <Typography variant='h5' component='h1' gutterBottom sx={{ textTransform: 'capitalize' }}>
+        <CustomTypography variant='h5' component='h1' gutterBottom>
           {propertyName}
-        </Typography>
-        <Typography variant='body1' component='h2' gutterBottom>
+        </CustomTypography>
+        <CustomTypography variant='body1' component='h2' gutterBottom>
           Description
           <br />
           {description}
-        </Typography>
+        </CustomTypography>
         <Meta>
-          <Typography variant='body1' sx={{ textTransform: 'capitalize' }}>
+          <CustomTypography variant='body1'>
             <LocationOnIcon />
             {location.address}
-          </Typography>
-          <Typography variant='body1'>
+          </CustomTypography>
+          <CustomTypography variant='body1'>
             <AttachMoneyIcon />
             {valuation}
-          </Typography>
-          <Typography
+          </CustomTypography>
+          <CustomTypography
             variant='body1'
             className={`badge ${propertyType === 'sale' ? 'bg-success' : 'bg-warning text-dark'}`}
-            sx={{ textTransform: 'capitalize' }}
           >
             <HomeIcon sx={{ p: '1px', mr: '3px' }} />
             {propertyType}
-          </Typography>
+          </CustomTypography>
         </Meta>
       </Container>
     </Box>
@@ -69,4 +68,8 @@ const Meta = styled('div')`
   flex-direction: flex-start;
   align-items: center;
   gap: 1rem;
+`;
+
+const CustomTypography = styled(Typography)`
+  text-transform: capitalize;
 `;
