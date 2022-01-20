@@ -85,7 +85,7 @@ export default function Navbar() {
               return (
                 <CustomLink
                   key={link}
-                  href={link}
+                  href={`/${link}`}
                   color='#fff'
                   underline='none'
                   sx={{ textTransform: 'capitalize' }}
