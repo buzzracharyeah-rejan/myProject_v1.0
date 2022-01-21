@@ -47,7 +47,8 @@ export default function Navbar() {
   };
 
   const logout = () => {
-    localStorage.setItem('accessTkn', null);
+    // localStorage.setItem('accessTkn', null);
+    localStorage.removeItem('accessTkn');
     navigate('/login');
   };
 
