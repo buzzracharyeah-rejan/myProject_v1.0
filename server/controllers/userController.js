@@ -62,8 +62,19 @@ exports.deleteAllUsers = async (req, res, next) => {
 
     if (!users) throw new Error();
 
-    return responseSuccess(res, httpStatus.INTERNAL_SERVER_ERROR, 'delete users', 'delete users success', users);
+    return responseSuccess(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'delete users',
+      'delete users success',
+      users
+    );
   } catch (error) {
-    return responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'delete users', 'delete users failed');
+    return responseError(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'delete users',
+      'delete users failed'
+    );
   }
 };

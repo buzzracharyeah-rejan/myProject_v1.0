@@ -10,10 +10,11 @@ const { kmConversion } = require('../utils/unit');
 
 exports.createProperty = async (req, res, next) => {
   try {
+    // console.log(req.body);
     const _id = req.user._id;
     const address = req.body.address;
-    const response = await getCoordinates(address);
-    const { longitude, latitude } = response.data[0];
+    // const response = await getCoordinates(address);
+    // const { longitude, latitude } = response.data[0];
     // console.log(longitude, latitude);
 
     //delete address from req.body
@@ -26,20 +27,14 @@ exports.createProperty = async (req, res, next) => {
       location: {
         location_geoJSON: {
           type: 'Point',
-          coordinates: [longitude, latitude],
+          coordinates: [85.31666564941406, 27.71666717529297],
         },
         address,
       },
     });
     await property.save();
 
-    return responseSuccess(
-      res,
-      httpStatus.CREATED,
-      'add property',
-      'new property created',
-      property
-    );
+    return responseSuccess(res, httpStatus.CREATED, 'add property', 'new property created', property);
   } catch (error) {
     console.error(error.stack);
     return responseError(res, httpStatus.BAD_REQUEST, 'add property', error.message);
@@ -127,6 +122,7 @@ exports.updateProperty = async (req, res, next) => {
     // console.log({ userId, propertyId });
 
     const { propertyName, propertyType, address, description, valuation, isSold } = req.body;
+    console.log(address);
     // const property = await Property.findOne({ _id: propertyId, owner: userId });
     // console.log(property);
     // res.status(200).send(property);
@@ -140,10 +136,13 @@ exports.updateProperty = async (req, res, next) => {
           description,
           valuation,
           isSold,
+          'location.address': address,
         },
       },
       { new: true }
     );
+
+    console.log(updatedProperty);
     if (!updatedProperty) throw new Error();
 
     return responseSuccess(
@@ -334,12 +333,7 @@ exports.buyProperty = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error.stack);
-    responseError(
-      res,
-      httpStatus.INTERNAL_SERVER_ERROR,
-      'buy property',
-      'property purchase failed'
-    );
+    responseError(res, httpStatus.INTERNAL_SERVER_ERROR, 'buy property', 'property purchase failed');
   }
 };
 
