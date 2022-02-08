@@ -2,8 +2,9 @@ import axios from 'axios';
 
 // dotenv.config({ path: path.join(__dirname, '.env') });
 
+console.log(process.env.REACT_APP_DEV_URI);
 const customAxios = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: process.env.REACT_APP_DEV_URI,
   timeout: 1000,
 });
 
